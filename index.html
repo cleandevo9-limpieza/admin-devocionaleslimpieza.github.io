@@ -214,11 +214,6 @@ background:white;
 box-shadow:0 0 0 2px rgba(77,163,255,0.2);
 }
 
-textarea.readonly{
-background:#f0f0f0;
-pointer-events:none;
-}
-
 .peticion{
 margin-top:30px;
 background:white;
@@ -251,11 +246,6 @@ background:linear-gradient(135deg,#4da3ff,#1f6fb2);
 
 .enviar{
 background:linear-gradient(135deg,#1f6fb2,#0b3d91);
-}
-
-button:hover{
-transform:translateY(-2px);
-box-shadow:0 10px 20px rgba(0,0,0,0.15);
 }
 
 .login{
@@ -294,7 +284,6 @@ color:white;
 
 <div class="container">
 
-<!-- ENVÍOS -->
 <div id="envios">
 <h3>Historial de Envíos</h3>
 <table>
@@ -307,13 +296,9 @@ color:white;
 </table>
 </div>
 
-<!-- TODO TU CONTENIDO ORIGINAL -->
 <div id="contenidoPrincipal">
 
-<div class="tabs" id="tabs" style="display:none;">
-<div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
-<div class="tab" onclick="cambiarVista('anterior', this)">Semana anterior</div>
-</div>
+<div class="tabs" id="tabs" style="display:none;"></div>
 
 <div class="header">
 <h1>Ministerio de Limpieza</h1>
@@ -367,6 +352,9 @@ color:white;
 
 <script>
 
+const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
+let usuario="";
+
 /* MENU */
 function toggleMenu(){
 let m=document.getElementById("menu");
@@ -390,23 +378,76 @@ function cargarEnvios(){
 let lista=JSON.parse(localStorage.getItem("envios"))||[];
 let html="";
 lista.forEach(e=>{
-html+=`
-<tr>
-<td>${e.usuario}</td>
-<td>${e.hora}</td>
-<td>${e.minutos}</td>
-</tr>`;
+html+=`<tr><td>${e.usuario}</td><td>${e.hora}</td><td>${e.minutos}</td></tr>`;
 });
 document.getElementById("tablaEnvios").innerHTML=html;
 }
 
-/* TU JS ORIGINAL (solo agregué guardado de envíos) */
+/* LOGIN */
+window.onload=function(){
+let u=localStorage.getItem("usuario");
+if(u){usuario=u; iniciar();}
+}
 
-const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
-let usuario="";
-let contadorClicks=0;
-let vista="actual";
+function entrar(){
+usuario=document.getElementById("usuario").value.trim();
+if(!usuario){alert("Escribe un usuario"); return;}
+localStorage.setItem("usuario",usuario);
+iniciar();
+}
 
+function iniciar(){
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="block";
+document.getElementById("titulo").innerText="Usuario: "+usuario;
+document.getElementById("versiculo").style.display="block";
+crearTabla();
+cargar();
+}
+
+/* TABLA */
+function crearTabla(){
+let html="";
+dias.forEach(d=>{
+html+=`
+<tr>
+<td><span class="dia-badge">${d}</span></td>
+<td><textarea id="${d}-lectura"></textarea></td>
+<td><textarea id="${d}-oracion"></textarea></td>
+<td><textarea id="${d}-dios"></textarea></td>
+</tr>`;
+});
+document.getElementById("tabla").innerHTML=html;
+}
+
+/* GUARDAR */
+function guardar(){
+let data={};
+dias.forEach(d=>{
+data[d]={
+lectura:document.getElementById(d+"-lectura").value,
+oracion:document.getElementById(d+"-oracion").value,
+dios:document.getElementById(d+"-dios").value
+}
+});
+data.peticion=document.getElementById("peticion").value;
+localStorage.setItem("datos",JSON.stringify(data));
+alert("Guardado");
+}
+
+/* CARGAR */
+function cargar(){
+let data=JSON.parse(localStorage.getItem("datos"));
+if(!data) return;
+dias.forEach(d=>{
+document.getElementById(d+"-lectura").value=data[d]?.lectura||"";
+document.getElementById(d+"-oracion").value=data[d]?.oracion||"";
+document.getElementById(d+"-dios").value=data[d]?.dios||"";
+});
+document.getElementById("peticion").value=data.peticion||"";
+}
+
+/* ENVIAR */
 function enviar(){
 
 let btn=document.querySelector(".enviar");
@@ -415,11 +456,11 @@ btn.innerText="Enviando...";
 btn.style.background="gray";
 
 let datos=[];
-let totalMin=0;
+let total=0;
 
 dias.forEach(d=>{
 let oracion=document.getElementById(d+"-oracion").value.trim();
-totalMin+=parseInt(oracion)||0;
+total+=parseInt(oracion)||0;
 
 datos.push({
 usuario,
@@ -430,33 +471,30 @@ dios:document.getElementById(d+"-dios").value
 });
 });
 
-/* GUARDAR ENVÍO */
+/* GUARDAR HISTORIAL */
 let lista=JSON.parse(localStorage.getItem("envios"))||[];
-
-let ahora=new Date().toLocaleString();
-
 lista.push({
-usuario:usuario,
-hora:ahora,
-minutos:totalMin
+usuario,
+hora:new Date().toLocaleString(),
+minutos:total
 });
-
 localStorage.setItem("envios",JSON.stringify(lista));
 
-/* FETCH ORIGINAL */
-fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec", {
+fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec",{
 method:"POST",
 mode:"no-cors",
-headers:{
-"Content-Type":"application/json"
-},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify(datos)
 })
 .then(()=>{
-alert("Enviado correctamente");
+alert("Enviado");
+localStorage.removeItem("datos");
+btn.innerText="Enviado";
 })
 .catch(()=>{
 alert("Error");
+btn.disabled=false;
+btn.innerText="Enviar";
 });
 
 }
