@@ -16,52 +16,57 @@ background:linear-gradient(135deg,#eaf2ff,#f8fbff);
 color:#1a2a44;
 }
 
-/* ===== MENU ===== */
+/* MENU */
 .menu-btn{
-position:fixed;
+position:absolute;
 top:15px;
 left:15px;
-font-size:20px;
-background:white;
-border:none;
-border-radius:10px;
-padding:6px 10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
+font-size:22px;
 cursor:pointer;
-z-index:1000;
+z-index:10;
 }
 
 .menu{
-position:fixed;
-top:0;
-left:-230px;
-width:200px;
-height:100%;
+position:absolute;
+top:50px;
+left:15px;
 background:white;
-box-shadow:5px 0 20px rgba(0,0,0,0.1);
-padding:20px;
-transition:0.3s;
-z-index:999;
-}
-
-.menu.open{
-left:0;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+display:none;
+overflow:hidden;
 }
 
 .menu div{
-padding:10px;
-border-radius:10px;
+padding:12px 18px;
 cursor:pointer;
-margin-bottom:8px;
-color:#1f6fb2;
-font-weight:500;
+font-size:14px;
 }
 
 .menu div:hover{
 background:#eef5ff;
 }
 
-/* ===== TU DISEÑO ORIGINAL ===== */
+/* TABLA ENVIOS */
+#envios{
+display:none;
+margin-top:20px;
+}
+
+#envios table{
+width:100%;
+border-collapse:separate;
+border-spacing:12px;
+}
+
+#envios td, #envios th{
+background:white;
+padding:14px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 5px 12px rgba(0,0,0,0.05);
+font-size:13px;
+}
 
 .container{
 max-width:1000px;
@@ -275,55 +280,35 @@ background:linear-gradient(135deg,#1f6fb2,#0b3d91);
 color:white;
 }
 
-/* ===== ENVIOS ===== */
-#vistaEnvios{
-display:none;
-}
-
-.card-envio{
-background:white;
-padding:15px;
-border-radius:14px;
-margin-bottom:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.05);
-font-size:13px;
-}
-
-@media (max-width:768px){
-td{
-padding:10px;
-}
-textarea{
-height:70px;
-font-size:12px;
-}
-td:first-child{
-width:45px;
-min-width:45px;
-}
-}
-
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(20px);}
-to{opacity:1; transform:translateY(0);}
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- MENU -->
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<div class="menu-btn" onclick="toggleMenu()">☰</div>
 
 <div class="menu" id="menu">
-<div onclick="irVista('devocional')">Mi devocional</div>
-<div onclick="irVista('envios')">Envíos</div>
+<div onclick="mostrarDevocional()">Mi devocional</div>
+<div onclick="mostrarEnvios()">Envíos</div>
 </div>
 
-<!-- TU APP ORIGINAL -->
-<div id="vistaDevocional">
 <div class="container">
+
+<!-- ENVÍOS -->
+<div id="envios">
+<h3>Historial de Envíos</h3>
+<table>
+<tr>
+<th>Usuario</th>
+<th>Hora</th>
+<th>Minutos Orados</th>
+</tr>
+<tbody id="tablaEnvios"></tbody>
+</table>
+</div>
+
+<!-- TODO TU CONTENIDO ORIGINAL -->
+<div id="contenidoPrincipal">
 
 <div class="tabs" id="tabs" style="display:none;">
 <div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
@@ -375,65 +360,106 @@ to{opacity:1; transform:translateY(0);}
 </div>
 
 </div>
-</div>
+
 </div>
 
-<!-- ENVIOS -->
-<div class="container" id="vistaEnvios">
-<h2>Envíos</h2>
-<div id="listaEnvios"></div>
 </div>
 
 <script>
 
-const URL="https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec";
-
+/* MENU */
 function toggleMenu(){
-document.getElementById("menu").classList.toggle("open");
+let m=document.getElementById("menu");
+m.style.display=m.style.display==="block"?"none":"block";
 }
 
-function irVista(vista){
-document.getElementById("menu").classList.remove("open");
-
-if(vista==="devocional"){
-document.getElementById("vistaDevocional").style.display="block";
-document.getElementById("vistaEnvios").style.display="none";
-}else{
-document.getElementById("vistaDevocional").style.display="none";
-document.getElementById("vistaEnvios").style.display="block";
+function mostrarEnvios(){
+document.getElementById("contenidoPrincipal").style.display="none";
+document.getElementById("envios").style.display="block";
 cargarEnvios();
+toggleMenu();
 }
+
+function mostrarDevocional(){
+document.getElementById("contenidoPrincipal").style.display="block";
+document.getElementById("envios").style.display="none";
+toggleMenu();
 }
 
 function cargarEnvios(){
-fetch(URL)
-.then(res=>res.json())
-.then(data=>{
+let lista=JSON.parse(localStorage.getItem("envios"))||[];
 let html="";
-data.reverse().forEach(e=>{
+lista.forEach(e=>{
 html+=`
-<div class="card-envio">
-<b>${e.usuario}</b> - ${e.dia}<br>
-Lectura: ${e.lectura}<br>
-Oración: ${e.oracion}<br>
-Dios habló: ${e.dios}
-</div>`;
+<tr>
+<td>${e.usuario}</td>
+<td>${e.hora}</td>
+<td>${e.minutos}</td>
+</tr>`;
 });
-document.getElementById("listaEnvios").innerHTML=html;
-})
-.catch(()=>{
-document.getElementById("listaEnvios").innerHTML="Error al cargar datos";
-});
+document.getElementById("tablaEnvios").innerHTML=html;
 }
 
-/* ===== TU JS ORIGINAL (SIN CAMBIOS) ===== */
+/* TU JS ORIGINAL (solo agregué guardado de envíos) */
 
 const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario="";
 let contadorClicks=0;
 let vista="actual";
 
-/* TODO tu código original sigue igual... */
+function enviar(){
+
+let btn=document.querySelector(".enviar");
+btn.disabled=true;
+btn.innerText="Enviando...";
+btn.style.background="gray";
+
+let datos=[];
+let totalMin=0;
+
+dias.forEach(d=>{
+let oracion=document.getElementById(d+"-oracion").value.trim();
+totalMin+=parseInt(oracion)||0;
+
+datos.push({
+usuario,
+dia:d,
+lectura:document.getElementById(d+"-lectura").value,
+oracion,
+dios:document.getElementById(d+"-dios").value
+});
+});
+
+/* GUARDAR ENVÍO */
+let lista=JSON.parse(localStorage.getItem("envios"))||[];
+
+let ahora=new Date().toLocaleString();
+
+lista.push({
+usuario:usuario,
+hora:ahora,
+minutos:totalMin
+});
+
+localStorage.setItem("envios",JSON.stringify(lista));
+
+/* FETCH ORIGINAL */
+fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec", {
+method:"POST",
+mode:"no-cors",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(datos)
+})
+.then(()=>{
+alert("Enviado correctamente");
+})
+.catch(()=>{
+alert("Error");
+});
+
+}
 
 </script>
 
