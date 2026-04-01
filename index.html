@@ -263,7 +263,7 @@ background:linear-gradient(135deg,#1f6fb2,#0b3d91);
 color:white;
 }
 
-.envios{
+#envios{
 display:none;
 margin-top:20px;
 }
@@ -278,8 +278,8 @@ to{opacity:1; transform:translateY(0);}
 
 <body>
 
-<!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
+
 <div class="menu" id="menu">
 <div onclick="mostrarVista('devocional')">Mi devocional</div>
 <div onclick="mostrarVista('envios')">Envíos</div>
@@ -287,7 +287,7 @@ to{opacity:1; transform:translateY(0);}
 
 <div class="container">
 
-<div id="devocional">
+<div id="contenidoPrincipal">
 
 <div class="tabs" id="tabs" style="display:none;">
 <div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
@@ -342,7 +342,7 @@ to{opacity:1; transform:translateY(0);}
 
 </div>
 
-<div id="envios" class="envios">
+<div id="envios">
 <h3>Envíos en tiempo real</h3>
 <div class="tabla-container">
 <table>
@@ -375,10 +375,10 @@ function mostrarVista(v){
 document.getElementById("menu").style.display="none";
 
 if(v==="devocional"){
-document.getElementById("devocional").style.display="block";
+document.getElementById("contenidoPrincipal").style.display="block";
 document.getElementById("envios").style.display="none";
 }else{
-document.getElementById("devocional").style.display="none";
+document.getElementById("contenidoPrincipal").style.display="none";
 document.getElementById("envios").style.display="block";
 cargarEnvios();
 }
@@ -391,8 +391,7 @@ fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_
 let html="";
 data.reverse().forEach(e=>{
 let horas=(parseInt(e.oracion)||0)/60;
-html+=`
-<tr>
+html+=`<tr>
 <td>${e.usuario}</td>
 <td>${e.hora||"-"}</td>
 <td>${horas.toFixed(2)}</td>
