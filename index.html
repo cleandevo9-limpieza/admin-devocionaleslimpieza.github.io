@@ -142,7 +142,7 @@ table{
 width:100%;
 margin-top:25px;
 border-collapse:separate;
-border-spacing:12px 28px;
+border-spacing:10px 22px;
 }
 
 th{
@@ -153,18 +153,18 @@ padding-bottom:10px;
 }
 
 td{
-padding:16px;
+padding:18px;
 vertical-align:top;
 background:white;
-border-radius:14px;
-box-shadow:0 8px 18px rgba(0,0,0,0.05);
+border-radius:16px;
+box-shadow:0 10px 22px rgba(0,0,0,0.06);
 }
 
 td:first-child{
-width:50px;
-min-width:50px;
+width:55px;
+min-width:55px;
 text-align:center;
-padding:8px 4px;
+padding:6px 4px;
 }
 
 .dia-badge{
@@ -182,11 +182,11 @@ width:100%;
 background:#f5f9ff;
 border:1px solid rgba(0,0,0,0.05);
 border-radius:12px;
-padding:12px;
+padding:14px;
 color:#1a2a44;
 resize:none;
-height:90px;
-font-size:13px;
+height:110px;
+font-size:14px;
 transition:0.2s;
 }
 
@@ -266,6 +266,12 @@ color:white;
 #envios{
 display:none;
 margin-top:20px;
+}
+
+@media(max-width:768px){
+.container{padding:18px;}
+td{padding:14px;}
+textarea{height:120px;}
 }
 
 @keyframes fadeIn{
@@ -386,13 +392,18 @@ cargarEnvios();
 
 function cargarEnvios(){
 fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec")
-.then(res=>res.json())
-.then(data=>{
+.then(res=>res.text())
+.then(text=>{
+let data;
+try{ data = JSON.parse(text); }catch(e){
+document.getElementById("tablaEnvios").innerHTML="<tr><td colspan='4'>Sin datos aún</td></tr>";
+return;
+}
 let html="";
 data.reverse().forEach(e=>{
 let horas=(parseInt(e.oracion)||0)/60;
 html+=`<tr>
-<td>${e.usuario}</td>
+<td>${e.usuario||"-"}</td>
 <td>${e.hora||"-"}</td>
 <td>${horas.toFixed(2)}</td>
 <td>${e.peticion||"-"}</td>
@@ -407,16 +418,13 @@ document.getElementById("tablaEnvios").innerHTML="<tr><td colspan='4'>Error al c
 
 window.onload=function(){
 let usuarioGuardado=localStorage.getItem("usuario");
-
 if(usuarioGuardado){
 usuario=usuarioGuardado;
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 document.getElementById("tabs").style.display="flex";
-
 document.getElementById("titulo").innerText="Usuario: "+usuario;
 document.getElementById("versiculo").style.display="block";
-
 crearTabla();
 cargarDatos();
 controlarEnvio();
@@ -426,21 +434,13 @@ activarBotonSecreto();
 
 function entrar(){
 usuario=document.getElementById("usuario").value.trim();
-
-if(usuario==""){
-alert("Escribe un usuario");
-return;
-}
-
+if(usuario==""){ alert("Escribe un usuario"); return; }
 localStorage.setItem("usuario",usuario);
-
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 document.getElementById("tabs").style.display="flex";
-
 document.getElementById("titulo").innerText="Usuario: "+usuario;
 document.getElementById("versiculo").style.display="block";
-
 crearTabla();
 controlarEnvio();
 activarBotonSecreto();
@@ -448,47 +448,33 @@ activarBotonSecreto();
 
 function cambiarVista(tipo, el){
 vista=tipo;
-
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
 el.classList.add("active");
-
-if(tipo==="actual"){
-cargarDatos();
-bloquearEdicion(false);
-}else{
-cargarAnterior();
-bloquearEdicion(true);
-}
+if(tipo==="actual"){ cargarDatos(); bloquearEdicion(false); }
+else{ cargarAnterior(); bloquearEdicion(true); }
 }
 
 function bloquearEdicion(estado){
 document.querySelectorAll("textarea").forEach(t=>{
-if(estado){
-t.classList.add("readonly");
-}else{
-t.classList.remove("readonly");
-}
+estado ? t.classList.add("readonly") : t.classList.remove("readonly");
 });
 }
 
 function cargarAnterior(){
 let datos=JSON.parse(localStorage.getItem("semanaAnterior"));
 if(!datos) return;
-
 dias.forEach(d=>{
 document.getElementById(d+"-lectura").value=datos[d]?.lectura||"";
 document.getElementById(d+"-oracion").value=datos[d]?.oracion||"";
 document.getElementById(d+"-dios").value=datos[d]?.dios||"";
 });
-
 document.getElementById("peticion").value=datos["peticion"]||"";
 }
 
 function crearTabla(){
 let html="";
 dias.forEach(d=>{
-html+=`
-<tr>
+html+=`<tr>
 <td><span class="dia-badge">${d}</span></td>
 <td><textarea id="${d}-lectura"></textarea></td>
 <td><textarea id="${d}-oracion"></textarea></td>
@@ -500,7 +486,6 @@ document.getElementById("tabla").innerHTML=html;
 
 function guardar(){
 let data={};
-
 dias.forEach(d=>{
 data[d]={
 lectura:document.getElementById(d+"-lectura").value,
@@ -508,9 +493,7 @@ oracion:document.getElementById(d+"-oracion").value,
 dios:document.getElementById(d+"-dios").value
 }
 });
-
 data["peticion"]=document.getElementById("peticion").value;
-
 localStorage.setItem("datos",JSON.stringify(data));
 alert("Progreso guardado");
 }
@@ -518,55 +501,47 @@ alert("Progreso guardado");
 function cargarDatos(){
 let datos=JSON.parse(localStorage.getItem("datos"));
 if(!datos) return;
-
 dias.forEach(d=>{
 document.getElementById(d+"-lectura").value=datos[d]?.lectura||"";
 document.getElementById(d+"-oracion").value=datos[d]?.oracion||"";
 document.getElementById(d+"-dios").value=datos[d]?.dios||"";
 });
-
 document.getElementById("peticion").value=datos["peticion"]||"";
 }
 
 function controlarEnvio(){
-let tiempoGuardado=localStorage.getItem("tiempoEnvio");
-
-if(tiempoGuardado){
-let diferencia=Date.now()-parseInt(tiempoGuardado);
-
-if(diferencia<60000){
+let t=localStorage.getItem("tiempoEnvio");
+if(t){
+let d=Date.now()-parseInt(t);
+if(d<60000){
 bloquearBoton();
-setTimeout(desbloquearBoton,60000-diferencia);
+setTimeout(desbloquearBoton,60000-d);
 }
 }
 }
 
 function bloquearBoton(){
-let btn=document.querySelector(".enviar");
-btn.disabled=true;
-btn.innerText="Ya se ha enviado tu devocional";
-btn.style.background="gray";
+let b=document.querySelector(".enviar");
+b.disabled=true;
+b.innerText="Ya se ha enviado tu devocional";
+b.style.background="gray";
 }
 
 function desbloquearBoton(){
-let btn=document.querySelector(".enviar");
-btn.disabled=false;
-btn.innerText="Enviar";
-btn.style.background="linear-gradient(135deg,#1f6fb2,#0b3d91)";
+let b=document.querySelector(".enviar");
+b.disabled=false;
+b.innerText="Enviar";
+b.style.background="linear-gradient(135deg,#1f6fb2,#0b3d91)";
 localStorage.removeItem("tiempoEnvio");
 }
 
 function enviar(){
+let b=document.querySelector(".enviar");
+b.disabled=true;
+b.innerText="Enviando...";
+b.style.background="gray";
 
-let btn=document.querySelector(".enviar");
-btn.disabled=true;
-btn.innerText="Enviando...";
-btn.style.background="gray";
-
-let datos=[];
-let incompleto=false;
-let errorOracion=false;
-
+let datos=[], incompleto=false, errorOracion=false;
 let peticion=document.getElementById("peticion").value;
 
 dias.forEach(d=>{
@@ -574,48 +549,35 @@ let lectura=document.getElementById(d+"-lectura").value.trim();
 let oracion=document.getElementById(d+"-oracion").value.trim();
 let dios=document.getElementById(d+"-dios").value.trim();
 
-if(!lectura || !oracion || !dios) incompleto=true;
+if(!lectura||!oracion||!dios) incompleto=true;
 if(!/^\d+$/.test(oracion)) errorOracion=true;
 
 datos.push({usuario,dia:d,lectura,oracion,dios,peticion});
 });
 
-if(incompleto){
-alert("Llena todos los campos");
-desbloquearBoton();
-return;
-}
+if(incompleto){ alert("Llena todos los campos"); desbloquearBoton(); return; }
+if(errorOracion){ alert("La oración debe ser solo números"); desbloquearBoton(); return; }
 
-if(errorOracion){
-alert("La oración debe ser solo números");
-desbloquearBoton();
-return;
-}
-
-let dataGuardar={};
+let guardar={};
 dias.forEach(d=>{
-dataGuardar[d]={
+guardar[d]={
 lectura:document.getElementById(d+"-lectura").value,
 oracion:document.getElementById(d+"-oracion").value,
 dios:document.getElementById(d+"-dios").value
 }
 });
-dataGuardar["peticion"]=peticion;
-localStorage.setItem("semanaAnterior",JSON.stringify(dataGuardar));
+guardar["peticion"]=peticion;
+localStorage.setItem("semanaAnterior",JSON.stringify(guardar));
 
-fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec", {
+fetch("https://script.google.com/macros/s/AKfycbyYwcuWOCdorgkWBybhxrZt2NwiGPr4A_6FAH1b2FGNOEbcxf5SXZgc7NffPRVH7hHdog/exec",{
 method:"POST",
 mode:"no-cors",
-headers:{
-"Content-Type":"application/json"
-},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify(datos)
 })
 .then(()=>{
 alert("Enviado correctamente");
-
 localStorage.setItem("tiempoEnvio",Date.now());
-
 bloquearBoton();
 localStorage.removeItem("datos");
 })
@@ -623,29 +585,21 @@ localStorage.removeItem("datos");
 alert("Error de conexión");
 desbloquearBoton();
 });
-
 }
 
 function activarBotonSecreto(){
-let titulo = document.getElementById("titulo");
-
-titulo.addEventListener("click", function(){
-
+let t=document.getElementById("titulo");
+t.addEventListener("click",()=>{
 contadorClicks++;
-
-if(contadorClicks === 5){
-
+if(contadorClicks===5){
 if(confirm("¿Deseas cambiar de usuario?")){
 localStorage.removeItem("usuario");
 localStorage.removeItem("datos");
 location.reload();
 }
-
-contadorClicks = 0;
+contadorClicks=0;
 }
-
-setTimeout(()=>{contadorClicks = 0;}, 1500);
-
+setTimeout(()=>{contadorClicks=0;},1500);
 });
 }
 
