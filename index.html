@@ -138,11 +138,12 @@ width:100%;
 overflow-x:auto;
 }
 
+/* 🔹 Ajuste: td más pequeño para que textarea sea más ancho */
 table{
 width:100%;
 margin-top:25px;
 border-collapse:separate;
-border-spacing:10px 22px;
+border-spacing:6px 20px; /* antes 10px 22px */
 }
 
 th{
@@ -153,7 +154,7 @@ padding-bottom:10px;
 }
 
 td{
-padding:18px;
+padding:12px; /* antes 18px */
 vertical-align:top;
 background:white;
 border-radius:16px;
@@ -177,7 +178,7 @@ font-size:10px;
 font-weight:600;
 }
 
-/* 🔹 Ajuste para que se vea más largo */
+/* 🔹 Ajuste: textarea un poco más ancho y un poco más bajo */
 textarea{
 width:100%;
 background:#f5f9ff;
@@ -186,7 +187,7 @@ border-radius:12px;
 padding:14px;
 color:#1a2a44;
 resize:none;
-min-height:140px; /* antes 110px */
+min-height:100px; /* antes 110px */
 font-size:14px;
 transition:0.2s;
 }
@@ -271,8 +272,8 @@ margin-top:20px;
 
 @media(max-width:768px){
 .container{padding:18px;}
-td{padding:14px;}
-textarea{min-height:150px;} /* antes 120px */
+td{padding:10px;} /* menos padding para más ancho */
+textarea{min-height:110px;} /* más bajito en móvil */
 }
 
 @keyframes fadeIn{
