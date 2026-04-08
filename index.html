@@ -16,7 +16,6 @@ background:linear-gradient(135deg,#eaf2ff,#f8fbff);
 color:#1a2a44;
 }
 
-/* MENU */
 .menu-btn{
 position:fixed;
 top:15px;
@@ -63,7 +62,6 @@ box-shadow:0 20px 40px rgba(0,0,0,0.08);
 animation:fadeIn 0.6s ease;
 }
 
-/* TABS */
 .tabs{
 display:flex;
 background:#eef5ff;
@@ -139,12 +137,11 @@ width:100%;
 overflow-x:auto;
 }
 
-/* TABLA */
 table{
 width:100%;
 margin-top:15px;
 border-collapse:separate;
-border-spacing:6px 8px; /* MENOS ESPACIO VERTICAL */
+border-spacing:6px 8px;
 }
 
 th{
@@ -155,7 +152,7 @@ padding-bottom:10px;
 }
 
 td{
-padding:6px 12px; /* MENOS ALTURA, MISMO ANCHO */
+padding:6px 12px;
 vertical-align:top;
 background:white;
 border-radius:16px;
@@ -179,7 +176,6 @@ font-size:10px;
 font-weight:600;
 }
 
-/* TEXTAREA (FORZADO MÁS BAJO) */
 textarea{
 width:100%;
 background:#f5f9ff;
@@ -191,6 +187,7 @@ resize:none;
 height:90px;
 font-size:13px;
 transition:0.2s;
+box-sizing:border-box;
 }
 
 textarea:focus{
@@ -268,7 +265,94 @@ color:white;
 
 #envios{
 display:none;
-margin-top:20px;
+margin-top:10px;
+}
+
+#envios h3{
+color:#1f6fb2;
+margin-bottom:5px;
+}
+
+.card-envio{
+background:white;
+border-radius:16px;
+box-shadow:0 8px 20px rgba(0,0,0,0.06);
+padding:16px 20px;
+margin-bottom:14px;
+border-left:4px solid #1f6fb2;
+}
+
+.card-envio .cabecera{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:8px;
+}
+
+.card-envio .nombre{
+font-weight:700;
+font-size:15px;
+color:#1f6fb2;
+}
+
+.card-envio .hora{
+font-size:12px;
+color:#888;
+background:#eef5ff;
+padding:3px 8px;
+border-radius:8px;
+}
+
+.card-envio .detalle{
+font-size:13px;
+color:#444;
+margin-bottom:4px;
+}
+
+.card-envio .peticion-txt{
+font-size:12px;
+font-style:italic;
+color:#666;
+background:#f5f9ff;
+padding:8px 10px;
+border-radius:10px;
+margin-top:6px;
+}
+
+.tag-oracion{
+display:inline-block;
+background:#eef5ff;
+color:#1f6fb2;
+font-size:11px;
+font-weight:600;
+padding:3px 9px;
+border-radius:8px;
+margin-top:4px;
+}
+
+.sin-datos{
+text-align:center;
+color:#aaa;
+padding:30px;
+font-size:14px;
+}
+
+.btn-reload{
+background:#eef5ff;
+color:#1f6fb2;
+border:none;
+border-radius:10px;
+padding:8px 16px;
+font-size:13px;
+cursor:pointer;
+font-weight:600;
+margin-bottom:12px;
+}
+
+.btn-reload:hover{
+background:#d9ecff;
+transform:none;
+box-shadow:none;
 }
 
 @media(max-width:768px){
@@ -280,7 +364,6 @@ textarea{
 }
 }
 
-/* ANIMACIÓN */
 @keyframes fadeIn{
 from{opacity:0; transform:translateY(20px);}
 to{opacity:1; transform:translateY(0);}
@@ -294,323 +377,65 @@ to{opacity:1; transform:translateY(0);}
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
 <div class="menu" id="menu">
-<div onclick="mostrarVista('devocional')">Mi devocional</div>
-<div onclick="mostrarVista('envios')">Envíos</div>
+  <div onclick="mostrarVista('devocional')">📖 Mi devocional</div>
+  <div onclick="mostrarVista('envios')">📋 Envíos</div>
 </div>
 
 <div class="container">
 
-<div id="contenidoPrincipal">
+  <div id="contenidoPrincipal">
 
-<div class="tabs" id="tabs" style="display:none;">
-<div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
-<div class="tab" onclick="cambiarVista('anterior', this)">Semana anterior</div>
-</div>
+    <div class="tabs" id="tabs" style="display:none;">
+      <div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
+      <div class="tab" onclick="cambiarVista('anterior', this)">Semana anterior</div>
+    </div>
 
-<div class="header">
-<h1>Ministerio de Limpieza</h1>
-<h2>Registro Devocional Semanal</h2>
+    <div class="header">
+      <h1>Ministerio de Limpieza</h1>
+      <h2>Registro Devocional Semanal</h2>
+      <div id="versiculo" class="versiculo">
+        "Porque Dios no es injusto para olvidar vuestra obra…"
+        <div class="referencia">Hebreos 6:10 RV 1960</div>
+      </div>
+    </div>
 
-<div id="versiculo" class="versiculo">
-“Porque Dios no es injusto para olvidar vuestra obra…”
-<div class="referencia">Hebreos 6:10 RV 1960</div>
-</div>
-</div>
+    <div id="login" class="login">
+      <h3>Ingresar Usuario</h3>
+      <input id="usuario" placeholder="Escribe tu usuario">
+      <br>
+      <button onclick="entrar()">Entrar</button>
+    </div>
 
-<div id="login" class="login">
-<h3>Ingresar Usuario</h3>
-<input id="usuario" placeholder="Escribe tu usuario">
-<br>
-<button onclick="entrar()">Entrar</button>
-</div>
+    <div id="app" style="display:none">
 
-<div id="app" style="display:none">
+      <h3 id="titulo"></h3>
 
-<h3 id="titulo"></h3>
+      <div class="tabla-container">
+        <table>
+          <tr>
+            <th>Día</th>
+            <th>Lectura</th>
+            <th>Oración (min)</th>
+            <th>Lo que Dios me habló</th>
+          </tr>
+          <tbody id="tabla"></tbody>
+        </table>
+      </div>
 
-<div class="tabla-container">
-<table>
-<tr>
-<th>Día</th>
-<th>Lectura</th>
-<th>Oración (min)</th>
-<th>Lo que Dios me habló</th>
-</tr>
-<tbody id="tabla"></tbody>
-</table>
-</div>
+      <div class="peticion">
+        <strong>Petición de oración</strong><br><br>
+        <textarea id="peticion"></textarea>
+      </div>
 
-<div class="peticion">
-<strong>Petición de oración</strong>
-<br><br>
-<textarea id="peticion"></textarea>
-</div>
+      <div class="botones">
+        <button class="guardar" onclick="guardar()">Guardar</button>
+        <button class="enviar" onclick="enviar()">Enviar</button>
+      </div>
 
-<div class="botones">
-<button class="guardar" onclick="guardar()">Guardar</button>
-<button class="enviar" onclick="enviar()">Enviar</button>
-</div>
+    </div>
+  </div>
 
-</div>
-
-</div>
-
-<div id="envios">
-<h3>Envíos en tiempo real</h3>
-<div class="tabla-container">
-<table>
-<tr>
-<th>Usuario</th>
-<th>Hora</th>
-<th>Horas oración</th>
-<th>Petición</th>
-</tr>
-<tbody id="tablaEnvios"></tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-<script>
-
-const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
-let usuario="";
-let contadorClicks=0;
-let vista="actual";
-
-function toggleMenu(){
-let menu=document.getElementById("menu");
-menu.style.display=menu.style.display==="block"?"none":"block";
-}
-
-function mostrarVista(v){
-document.getElementById("menu").style.display="none";
-
-if(v==="devocional"){
-document.getElementById("contenidoPrincipal").style.display="block";
-document.getElementById("envios").style.display="none";
-}else{
-document.getElementById("contenidoPrincipal").style.display="none";
-document.getElementById("envios").style.display="block";
-cargarEnvios();
-}
-}
-
-function cargarEnvios(){
-fetch("https://script.google.com/macros/s/AKfycbzaFHvRgw-zLnzDv8vHtqOUUdJfr6n_WHpLFjxir6gw0zqbcE9ol7V9StC0gvGmB78rFw/exec")
-.then(res=>res.text())
-.then(text=>{
-let data;
-try{ data = JSON.parse(text); }catch(e){
-document.getElementById("tablaEnvios").innerHTML="<tr><td colspan='4'>Sin datos aún</td></tr>";
-return;
-}
-let html="";
-data.reverse().forEach(e=>{
-let horas=(parseInt(e.oracion)||0)/60;
-html+=`<tr>
-<td>${e.usuario||"-"}</td>
-<td>${e.hora||"-"}</td>
-<td>${horas.toFixed(2)}</td>
-<td>${e.peticion||"-"}</td>
-</tr>`;
-});
-document.getElementById("tablaEnvios").innerHTML=html;
-})
-.catch(()=>{
-document.getElementById("tablaEnvios").innerHTML="<tr><td colspan='4'>Error al cargar</td></tr>";
-});
-}
-
-window.onload=function(){
-let usuarioGuardado=localStorage.getItem("usuario");
-if(usuarioGuardado){
-usuario=usuarioGuardado;
-document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="block";
-document.getElementById("tabs").style.display="flex";
-document.getElementById("titulo").innerText="Usuario: "+usuario;
-document.getElementById("versiculo").style.display="block";
-crearTabla();
-cargarDatos();
-controlarEnvio();
-activarBotonSecreto();
-}
-}
-
-function entrar(){
-usuario=document.getElementById("usuario").value.trim();
-if(usuario==""){ alert("Escribe un usuario"); return; }
-localStorage.setItem("usuario",usuario);
-document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="block";
-document.getElementById("tabs").style.display="flex";
-document.getElementById("titulo").innerText="Usuario: "+usuario;
-document.getElementById("versiculo").style.display="block";
-crearTabla();
-controlarEnvio();
-activarBotonSecreto();
-}
-
-function cambiarVista(tipo, el){
-vista=tipo;
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-el.classList.add("active");
-if(tipo==="actual"){ cargarDatos(); bloquearEdicion(false); }
-else{ cargarAnterior(); bloquearEdicion(true); }
-}
-
-function bloquearEdicion(estado){
-document.querySelectorAll("textarea").forEach(t=>{
-estado ? t.classList.add("readonly") : t.classList.remove("readonly");
-});
-}
-
-function cargarAnterior(){
-let datos=JSON.parse(localStorage.getItem("semanaAnterior"));
-if(!datos) return;
-dias.forEach(d=>{
-document.getElementById(d+"-lectura").value=datos[d]?.lectura||"";
-document.getElementById(d+"-oracion").value=datos[d]?.oracion||"";
-document.getElementById(d+"-dios").value=datos[d]?.dios||"";
-});
-document.getElementById("peticion").value=datos["peticion"]||"";
-}
-
-function crearTabla(){
-let html="";
-dias.forEach(d=>{
-html+=`<tr>
-<td><span class="dia-badge">${d}</span></td>
-<td><textarea id="${d}-lectura"></textarea></td>
-<td><textarea id="${d}-oracion"></textarea></td>
-<td><textarea id="${d}-dios"></textarea></td>
-</tr>`;
-});
-document.getElementById("tabla").innerHTML=html;
-}
-
-function guardar(){
-let data={};
-dias.forEach(d=>{
-data[d]={
-lectura:document.getElementById(d+"-lectura").value,
-oracion:document.getElementById(d+"-oracion").value,
-dios:document.getElementById(d+"-dios").value
-}
-});
-data["peticion"]=document.getElementById("peticion").value;
-localStorage.setItem("datos",JSON.stringify(data));
-alert("Progreso guardado");
-}
-
-function cargarDatos(){
-let datos=JSON.parse(localStorage.getItem("datos"));
-if(!datos) return;
-dias.forEach(d=>{
-document.getElementById(d+"-lectura").value=datos[d]?.lectura||"";
-document.getElementById(d+"-oracion").value=datos[d]?.oracion||"";
-document.getElementById(d+"-dios").value=datos[d]?.dios||"";
-});
-document.getElementById("peticion").value=datos["peticion"]||"";
-}
-
-function controlarEnvio(){
-let t=localStorage.getItem("tiempoEnvio");
-if(t){
-let d=Date.now()-parseInt(t);
-if(d<60000){
-bloquearBoton();
-setTimeout(desbloquearBoton,60000-d);
-}
-}
-}
-
-function bloquearBoton(){
-let b=document.querySelector(".enviar");
-b.disabled=true;
-b.innerText="Ya se ha enviado tu devocional";
-b.style.background="gray";
-}
-
-function desbloquearBoton(){
-let b=document.querySelector(".enviar");
-b.disabled=false;
-b.innerText="Enviar";
-b.style.background="linear-gradient(135deg,#1f6fb2,#0b3d91)";
-localStorage.removeItem("tiempoEnvio");
-}
-
-function enviar(){
-let b=document.querySelector(".enviar");
-b.disabled=true;
-b.innerText="Enviando...";
-b.style.background="gray";
-
-let datos=[], incompleto=false, errorOracion=false;
-let peticion=document.getElementById("peticion").value;
-
-dias.forEach(d=>{
-let lectura=document.getElementById(d+"-lectura").value.trim();
-let oracion=document.getElementById(d+"-oracion").value.trim();
-let dios=document.getElementById(d+"-dios").value.trim();
-
-if(!lectura||!oracion||!dios) incompleto=true;
-if(!/^\d+$/.test(oracion)) errorOracion=true;
-
-datos.push({usuario,dia:d,lectura,oracion,dios,peticion});
-});
-
-if(incompleto){ alert("Llena todos los campos"); desbloquearBoton(); return; }
-if(errorOracion){ alert("La oración debe ser solo números"); desbloquearBoton(); return; }
-
-let guardar={};
-dias.forEach(d=>{
-guardar[d]={
-lectura:document.getElementById(d+"-lectura").value,
-oracion:document.getElementById(d+"-oracion").value,
-dios:document.getElementById(d+"-dios").value
-}
-});
-guardar["peticion"]=peticion;
-localStorage.setItem("semanaAnterior",JSON.stringify(guardar));
-
-fetch("https://script.google.com/macros/s/AKfycbxzNmkOY1BI7rdLwtGzb-ZuhM05Oi3NdAEjjiFWWvviaus4VWLV3s4UaKS1np436BCTMg/exec",{
-method:"POST",
-mode:"no-cors",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(datos)
-})
-.then(()=>{
-alert("Enviado correctamente");
-localStorage.setItem("tiempoEnvio",Date.now());
-bloquearBoton();
-localStorage.removeItem("datos");
-})
-.catch(()=>{
-alert("Error de conexión");
-desbloquearBoton();
-});
-}
-
-function activarBotonSecreto(){
-let t=document.getElementById("titulo");
-t.addEventListener("click",()=>{
-contadorClicks++;
-if(contadorClicks===5){
-if(confirm("¿Deseas cambiar de usuario?")){
-localStorage.removeItem("usuario");
-localStorage.removeItem("datos");
-location.reload();
-}
-contadorClicks=0;
-}
-setTimeout(()=>{contadorClicks=0;},1500);
-});
-}
-
-</script>
-
-</body>
-</html>
+  <div id="envios">
+    <h3>📋 Envíos recientes</h3>
+    <button class="btn-reload" onclick="cargarEnvios()">↻ Actualizar</button>
+    <div id="listaEnvios">
