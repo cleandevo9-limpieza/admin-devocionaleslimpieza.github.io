@@ -2,17 +2,14 @@
 
 <html lang="es">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Ministerio de Limpieza</title>
-
 <style>
 
 body{
 margin:0;
-font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+font-family:-apple-system, BlinkMacSystemFont, “SF Pro Display”, sans-serif;
 background:linear-gradient(135deg,#eaf2ff,#f8fbff);
 color:#1a2a44;
 }
@@ -185,7 +182,7 @@ border-radius:12px;
 padding:10px;
 color:#1a2a44;
 resize:none;
-height:90px;
+height:130px;
 font-size:13px;
 transition:0.2s;
 box-sizing:border-box;
@@ -264,7 +261,6 @@ background:linear-gradient(135deg,#1f6fb2,#0b3d91);
 color:white;
 }
 
-/* ENVIOS */
 #envios{
 display:none;
 margin-top:10px;
@@ -358,12 +354,11 @@ box-shadow:none;
 }
 
 @media(max-width:768px){
-@media(max-width:768px){
 .container{padding:18px;}
 td{padding:6px 10px;}
 textarea{
-  min-height:35px;
-  height:35px;
+min-height:70px;
+height:70px;
 }
 }
 
@@ -373,16 +368,14 @@ to{opacity:1; transform:translateY(0);}
 }
 
 </style>
-
 </head>
-
 <body>
 
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
 <div class="menu" id="menu">
-<div onclick="mostrarVista('devocional')">📖 Mi devocional</div>
-<div onclick="mostrarVista('envios')">📋 Envíos</div>
+  <div onclick="mostrarVista('devocional')">📖 Mi devocional</div>
+  <div onclick="mostrarVista('envios')">📋 Envíos</div>
 </div>
 
 <div class="container">
@@ -406,6 +399,7 @@ to{opacity:1; transform:translateY(0);}
   </div>
 </div>
 
+<!-- LOGIN -->
 <div id="login" class="login">
   <h3>Ingresar Usuario</h3>
   <input id="usuario" placeholder="Escribe tu usuario">
@@ -413,7 +407,8 @@ to{opacity:1; transform:translateY(0);}
   <button onclick="entrar()">Entrar</button>
 </div>
 
-<div id="app" style="display:none">
+<!-- APP -->
+<div id="app" style="display:none;">
 
   <h3 id="titulo"></h3>
 
@@ -436,7 +431,7 @@ to{opacity:1; transform:translateY(0);}
 
   <div class="botones">
     <button class="guardar" onclick="guardar()">Guardar</button>
-    <button class="enviar" onclick="enviar()">Enviar</button>
+    <button class="enviar"  onclick="enviar()">Enviar</button>
   </div>
 
 </div>
@@ -456,170 +451,82 @@ to{opacity:1; transform:translateY(0);}
 
 <script>
 
-const dias=["Lun","Mar","Mié","Jue","Vie","Sáb"];
-let usuario="";
-let contadorClicks=0;
-let vista="actual";
+const URL_POST = "https://script.google.com/macros/s/AKfycbxzNmkOY1BI7rdLwtGzb-ZuhM05Oi3NdAEjjiFWWvviaus4VWLV3s4UaKS1np436BCTMg/exec";
+const URL_GET  = "https://script.google.com/macros/s/AKfycbxzNmkOY1BI7rdLwtGzb-ZuhM05Oi3NdAEjjiFWWvviaus4VWLV3s4UaKS1np436BCTMg/exec";
 
-// ── MENU ──────────────────────────────────────────
+const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb"];
+let usuario = "";
+let contadorClicks = 0;
+let vista = "actual";
+
+// ── MENÚ ──────────────────────────────────────────
 function toggleMenu(){
-  let m=document.getElementById("menu");
-  m.style.display=m.style.display==="block"?"none":"block";
+  const m = document.getElementById("menu");
+  m.style.display = m.style.display === "block" ? "none" : "block";
 }
 
 function mostrarVista(v){
-  document.getElementById("menu").style.display="none";
-  if(v==="devocional"){
-    document.getElementById("contenidoPrincipal").style.display="block";
-    document.getElementById("envios").style.display="none";
-  }else{
-    document.getElementById("contenidoPrincipal").style.display="none";
-    document.getElementById("envios").style.display="block";
+  document.getElementById("menu").style.display = "none";
+  if(v === "devocional"){
+    document.getElementById("contenidoPrincipal").style.display = "block";
+    document.getElementById("envios").style.display = "none";
+  } else {
+    document.getElementById("contenidoPrincipal").style.display = "none";
+    document.getElementById("envios").style.display = "block";
     cargarEnvios();
   }
 }
 
-// ── ENVÍOS ────────────────────────────────────────
-function cargarEnvios(){
-  document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>Cargando...</p>";
-
-  fetch("https://script.google.com/macros/s/AKfycbzaFHvRgw-zLnzDv8vHtqOUUdJfr6n_WHpLFjxir6gw0zqbcE9ol7V9StC0gvGmB78rFw/exec")
-  .then(res=>res.text())
-  .then(text=>{
-    let data;
-    try{ data=JSON.parse(text); }
-    catch(e){
-      document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>Sin datos aún</p>";
-      return;
-    }
-
-    if(!Array.isArray(data)||data.length===0){
-      document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>No hay envíos todavía</p>";
-      return;
-    }
-
-    // Agrupar filas por usuario + hora (cada envío tiene 6 filas, una por día)
-    const grupos={};
-    data.forEach(fila=>{
-      // Clave: usuario + fecha/hora (si existe), o solo usuario
-      const clave=(fila.usuario||"?")+"|||"+(fila.hora||fila.fecha||"");
-      if(!grupos[clave]){
-        grupos[clave]={
-          usuario: fila.usuario||"—",
-          hora:    fila.hora||fila.fecha||fila.timestamp||"—",
-          peticion:fila.peticion||"",
-          totalOracion:0,
-          dias:[]
-        };
-      }
-      // Sumar minutos de oración
-      const min=parseInt(fila.oracion)||0;
-      grupos[clave].totalOracion+=min;
-      grupos[clave].dias.push({dia:fila.dia||"", oracion:min});
-
-      // Si la petición está vacía en el grupo pero existe en esta fila, usarla
-      if(!grupos[clave].peticion && fila.peticion){
-        grupos[clave].peticion=fila.peticion;
-      }
-    });
-
-    // Ordenar más recientes primero
-    const lista=Object.values(grupos).reverse();
-
-    let html="";
-    lista.forEach(g=>{
-      const horas=(g.totalOracion/60).toFixed(2);
-      const petTxt=g.peticion
-        ? `<div class='peticion-txt'>🙏 ${escHtml(g.peticion)}</div>`
-        : "";
-
-      html+=`
-      <div class='card-envio'>
-        <div class='cabecera'>
-          <span class='nombre'>👤 ${escHtml(g.usuario)}</span>
-          <span class='hora'>🕐 ${escHtml(g.hora)}</span>
-        </div>
-        <div class='detalle'>
-          <span class='tag-oracion'>⏱ ${g.totalOracion} min oración (${horas} hrs)</span>
-        </div>
-        ${petTxt}
-      </div>`;
-    });
-
-    document.getElementById("listaEnvios").innerHTML=html;
-  })
-  .catch(()=>{
-    document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>Error al conectar con el servidor</p>";
-  });
-}
-
-function escHtml(str){
-  return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;");
-}
-
 // ── INICIO ────────────────────────────────────────
-window.onload=function(){
-  let u=localStorage.getItem("usuario");
+window.onload = function(){
+  const u = localStorage.getItem("usuario");
   if(u){
-    usuario=u;
-    document.getElementById("login").style.display="none";
-    document.getElementById("app").style.display="block";
-    document.getElementById("tabs").style.display="flex";
-    document.getElementById("titulo").innerText="Usuario: "+usuario;
-    document.getElementById("versiculo").style.display="block";
+    usuario = u;
+    document.getElementById("login").style.display  = "none";
+    document.getElementById("app").style.display    = "block";
+    document.getElementById("tabs").style.display   = "flex";
+    document.getElementById("titulo").innerText     = "Usuario: " + usuario;
+    document.getElementById("versiculo").style.display = "block";
     crearTabla();
     cargarDatos();
     controlarEnvio();
     activarBotonSecreto();
   }
-}
+};
 
 function entrar(){
-  usuario=document.getElementById("usuario").value.trim();
-  if(usuario==""){ alert("Escribe un usuario"); return; }
-  localStorage.setItem("usuario",usuario);
-  document.getElementById("login").style.display="none";
-  document.getElementById("app").style.display="block";
-  document.getElementById("tabs").style.display="flex";
-  document.getElementById("titulo").innerText="Usuario: "+usuario;
-  document.getElementById("versiculo").style.display="block";
+  usuario = document.getElementById("usuario").value.trim();
+  if(usuario === ""){ alert("Escribe un usuario"); return; }
+  localStorage.setItem("usuario", usuario);
+  document.getElementById("login").style.display  = "none";
+  document.getElementById("app").style.display    = "block";
+  document.getElementById("tabs").style.display   = "flex";
+  document.getElementById("titulo").innerText     = "Usuario: " + usuario;
+  document.getElementById("versiculo").style.display = "block";
   crearTabla();
   controlarEnvio();
   activarBotonSecreto();
 }
 
-function cambiarVista(tipo,el){
-  vista=tipo;
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+function cambiarVista(tipo, el){
+  vista = tipo;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   el.classList.add("active");
-  if(tipo==="actual"){ cargarDatos(); bloquearEdicion(false); }
-  else{ cargarAnterior(); bloquearEdicion(true); }
+  if(tipo === "actual"){ cargarDatos(); bloquearEdicion(false); }
+  else { cargarAnterior(); bloquearEdicion(true); }
 }
 
 function bloquearEdicion(estado){
-  document.querySelectorAll("textarea").forEach(t=>{
-    estado?t.classList.add("readonly"):t.classList.remove("readonly");
+  document.querySelectorAll("textarea").forEach(t => {
+    estado ? t.classList.add("readonly") : t.classList.remove("readonly");
   });
 }
 
-function cargarAnterior(){
-  let datos=JSON.parse(localStorage.getItem("semanaAnterior"));
-  if(!datos) return;
-  dias.forEach(d=>{
-    document.getElementById(d+"-lectura").value=datos[d]?.lectura||"";
-    document.getElementById(d+"-oracion").value=datos[d]?.oracion||"";
-    document.getElementById(d+"-dios").value=datos[d]?.dios||"";
-  });
-  document.getElementById("peticion").value=datos["peticion"]||"";
-}
-
+// ── TABLA ─────────────────────────────────────────
 function crearTabla(){
-  let html="";
-  dias.forEach(d=>{
-    html+=`<tr>
+  let html = "";
+  dias.forEach(d => {
+    html += `<tr>
       <td><span class="dia-badge">${d}</span></td>
       <td><textarea id="${d}-lectura"></textarea></td>
 
@@ -630,135 +537,202 @@ function crearTabla(){
 ```
 
 });
-document.getElementById(“tabla”).innerHTML=html;
+document.getElementById(“tabla”).innerHTML = html;
 }
 
+// ── GUARDAR / CARGAR ──────────────────────────────
 function guardar(){
-let data={};
-dias.forEach(d=>{
-data[d]={
-lectura:document.getElementById(d+”-lectura”).value,
-oracion:document.getElementById(d+”-oracion”).value,
-dios:document.getElementById(d+”-dios”).value
-}
+const data = {};
+dias.forEach(d => {
+data[d] = {
+lectura: document.getElementById(d+”-lectura”).value,
+oracion: document.getElementById(d+”-oracion”).value,
+dios:    document.getElementById(d+”-dios”).value
+};
 });
-data[“peticion”]=document.getElementById(“peticion”).value;
-localStorage.setItem(“datos”,JSON.stringify(data));
+data[“peticion”] = document.getElementById(“peticion”).value;
+localStorage.setItem(“datos”, JSON.stringify(data));
 alert(“Progreso guardado”);
 }
 
 function cargarDatos(){
-let datos=JSON.parse(localStorage.getItem(“datos”));
+const datos = JSON.parse(localStorage.getItem(“datos”));
 if(!datos) return;
-dias.forEach(d=>{
-document.getElementById(d+”-lectura”).value=datos[d]?.lectura||””;
-document.getElementById(d+”-oracion”).value=datos[d]?.oracion||””;
-document.getElementById(d+”-dios”).value=datos[d]?.dios||””;
+dias.forEach(d => {
+document.getElementById(d+”-lectura”).value = datos[d]?.lectura || “”;
+document.getElementById(d+”-oracion”).value = datos[d]?.oracion || “”;
+document.getElementById(d+”-dios”).value    = datos[d]?.dios    || “”;
 });
-document.getElementById(“peticion”).value=datos[“peticion”]||””;
+document.getElementById(“peticion”).value = datos[“peticion”] || “”;
 }
 
-function controlarEnvio(){
-let t=localStorage.getItem(“tiempoEnvio”);
-if(t){
-let d=Date.now()-parseInt(t);
-if(d<60000){ bloquearBoton(); setTimeout(desbloquearBoton,60000-d); }
-}
-}
-
-function bloquearBoton(){
-let b=document.querySelector(”.enviar”);
-b.disabled=true;
-b.innerText=“Ya se ha enviado tu devocional”;
-b.style.background=“gray”;
+function cargarAnterior(){
+const datos = JSON.parse(localStorage.getItem(“semanaAnterior”));
+if(!datos) return;
+dias.forEach(d => {
+document.getElementById(d+”-lectura”).value = datos[d]?.lectura || “”;
+document.getElementById(d+”-oracion”).value = datos[d]?.oracion || “”;
+document.getElementById(d+”-dios”).value    = datos[d]?.dios    || “”;
+});
+document.getElementById(“peticion”).value = datos[“peticion”] || “”;
 }
 
-function desbloquearBoton(){
-let b=document.querySelector(”.enviar”);
-b.disabled=false;
-b.innerText=“Enviar”;
-b.style.background=“linear-gradient(135deg,#1f6fb2,#0b3d91)”;
-localStorage.removeItem(“tiempoEnvio”);
-}
-
+// ── ENVIAR ────────────────────────────────────────
 function enviar(){
-let b=document.querySelector(”.enviar”);
-b.disabled=true;
-b.innerText=“Enviando…”;
-b.style.background=“gray”;
+const b = document.querySelector(”.enviar”);
+b.disabled  = true;
+b.innerText = “Enviando…”;
+b.style.background = “gray”;
 
-let datos=[], incompleto=false, errorOracion=false;
-let peticion=document.getElementById(“peticion”).value;
+let datos        = [];
+let incompleto   = false;
+let errorOracion = false;
+const peticion   = document.getElementById(“peticion”).value;
 
-// Agregar hora de envío al cliente
-const horaEnvio=new Date().toLocaleString(“es-ES”,{
+const horaEnvio = new Date().toLocaleString(“es-ES”,{
 day:“2-digit”, month:“2-digit”, year:“numeric”,
 hour:“2-digit”, minute:“2-digit”
 });
 
-dias.forEach(d=>{
-let lectura=document.getElementById(d+”-lectura”).value.trim();
-let oracion=document.getElementById(d+”-oracion”).value.trim();
-let dios=document.getElementById(d+”-dios”).value.trim();
+dias.forEach(d => {
+const lectura = document.getElementById(d+”-lectura”).value.trim();
+const oracion = document.getElementById(d+”-oracion”).value.trim();
+const dios    = document.getElementById(d+”-dios”).value.trim();
 
 ```
-if(!lectura||!oracion||!dios) incompleto=true;
-if(!/^\d+$/.test(oracion)) errorOracion=true;
+if(!lectura || !oracion || !dios) incompleto = true;
+if(!/^\d+$/.test(oracion))       errorOracion = true;
 
-datos.push({usuario, dia:d, lectura, oracion, dios, peticion, hora:horaEnvio});
+datos.push({ usuario, dia:d, lectura, oracion, dios, peticion, hora:horaEnvio });
 ```
 
 });
 
-if(incompleto){ alert(“Llena todos los campos”); desbloquearBoton(); return; }
+if(incompleto){   alert(“Llena todos los campos”); desbloquearBoton(); return; }
 if(errorOracion){ alert(“La oración debe ser solo números”); desbloquearBoton(); return; }
 
-let guardarObj={};
-dias.forEach(d=>{
-guardarObj[d]={
-lectura:document.getElementById(d+”-lectura”).value,
-oracion:document.getElementById(d+”-oracion”).value,
-dios:document.getElementById(d+”-dios”).value
-}
+// Guardar como semana anterior
+const guardarObj = {};
+dias.forEach(d => {
+guardarObj[d] = {
+lectura: document.getElementById(d+”-lectura”).value,
+oracion: document.getElementById(d+”-oracion”).value,
+dios:    document.getElementById(d+”-dios”).value
+};
 });
-guardarObj[“peticion”]=peticion;
-localStorage.setItem(“semanaAnterior”,JSON.stringify(guardarObj));
+guardarObj[“peticion”] = peticion;
+localStorage.setItem(“semanaAnterior”, JSON.stringify(guardarObj));
 
-fetch(“https://script.google.com/macros/s/AKfycbxzNmkOY1BI7rdLwtGzb-ZuhM05Oi3NdAEjjiFWWvviaus4VWLV3s4UaKS1np436BCTMg/exec”,{
-method:“POST”,
-mode:“no-cors”,
-headers:{“Content-Type”:“application/json”},
-body:JSON.stringify(datos)
+fetch(URL_POST, {
+method:  “POST”,
+mode:    “no-cors”,
+headers: { “Content-Type”: “application/json” },
+body:    JSON.stringify(datos)
 })
-.then(()=>{
+.then(() => {
 alert(“Enviado correctamente”);
-localStorage.setItem(“tiempoEnvio”,Date.now());
+localStorage.setItem(“tiempoEnvio”, Date.now());
 bloquearBoton();
 localStorage.removeItem(“datos”);
 })
-.catch(()=>{
+.catch(() => {
 alert(“Error de conexión”);
 desbloquearBoton();
 });
 }
 
+function controlarEnvio(){
+const t = localStorage.getItem(“tiempoEnvio”);
+if(t){
+const diff = Date.now() - parseInt(t);
+if(diff < 60000){ bloquearBoton(); setTimeout(desbloquearBoton, 60000 - diff); }
+}
+}
+
+function bloquearBoton(){
+const b = document.querySelector(”.enviar”);
+b.disabled         = true;
+b.innerText        = “Ya se ha enviado tu devocional”;
+b.style.background = “gray”;
+}
+
+function desbloquearBoton(){
+const b = document.querySelector(”.enviar”);
+b.disabled         = false;
+b.innerText        = “Enviar”;
+b.style.background = “linear-gradient(135deg,#1f6fb2,#0b3d91)”;
+localStorage.removeItem(“tiempoEnvio”);
+}
+
+// ── CARGAR ENVÍOS ─────────────────────────────────
+function cargarEnvios(){
+document.getElementById(“listaEnvios”).innerHTML = “<p class='sin-datos'>Cargando…</p>”;
+
+fetch(URL_GET)
+.then(res => res.json())
+.then(data => {
+if(!Array.isArray(data) || data.length === 0){
+document.getElementById(“listaEnvios”).innerHTML = “<p class='sin-datos'>No hay envíos todavía</p>”;
+return;
+}
+
+```
+let html = "";
+data.forEach(g => {
+  const min = parseInt(g.tiempo) || 0;
+  const hrs = min > 0 ? ` (${(min / 60).toFixed(2)} hrs)` : "";
+  const tiempoTxt = min > 0 ? `${min} min${hrs}` : (g.tiempo || "—");
+
+  const petTxt = g.peticion
+    ? `<div class='peticion-txt'>🙏 ${escHtml(g.peticion)}</div>`
+    : "";
+
+  html += `
+    <div class='card-envio'>
+      <div class='cabecera'>
+        <span class='nombre'>👤 ${escHtml(g.usuario)}</span>
+        <span class='hora'>🕐 ${escHtml(g.fecha)}</span>
+      </div>
+      <div class='detalle'>
+        <span class='tag-oracion'>⏱ ${escHtml(tiempoTxt)}</span>
+      </div>
+      ${petTxt}
+    </div>`;
+});
+
+document.getElementById("listaEnvios").innerHTML = html;
+```
+
+})
+.catch(() => {
+document.getElementById(“listaEnvios”).innerHTML = “<p class='sin-datos'>Error al conectar con el servidor</p>”;
+});
+}
+
+function escHtml(str){
+return String(str)
+.replace(/&/g,”&”)
+.replace(/</g,”<”)
+.replace(/>/g,”>”);
+}
+
+// ── BOTÓN SECRETO ─────────────────────────────────
 function activarBotonSecreto(){
-let t=document.getElementById(“titulo”);
-t.addEventListener(“click”,()=>{
+const t = document.getElementById(“titulo”);
+t.addEventListener(“click”, () => {
 contadorClicks++;
-if(contadorClicks===5){
+if(contadorClicks === 5){
 if(confirm(”¿Deseas cambiar de usuario?”)){
 localStorage.removeItem(“usuario”);
 localStorage.removeItem(“datos”);
 location.reload();
 }
-contadorClicks=0;
+contadorClicks = 0;
 }
-setTimeout(()=>{contadorClicks=0;},1500);
+setTimeout(() => { contadorClicks = 0; }, 1500);
 });
 }
 
 </script>
-
 </body>
 </html>
