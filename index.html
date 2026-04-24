@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +8,7 @@
 
 body{
 margin:0;
-font-family:-apple-system, BlinkMacSystemFont, “SF Pro Display”, sans-serif;
+font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
 background:linear-gradient(135deg,#eaf2ff,#f8fbff);
 color:#1a2a44;
 }
@@ -381,66 +380,62 @@ to{opacity:1; transform:translateY(0);}
 <div class="container">
 
   <!-- DEVOCIONAL -->
-
   <div id="contenidoPrincipal">
 
-```
-<div class="tabs" id="tabs" style="display:none;">
-  <div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
-  <div class="tab" onclick="cambiarVista('anterior', this)">Semana anterior</div>
-</div>
+    <div class="tabs" id="tabs" style="display:none;">
+      <div class="tab active" onclick="cambiarVista('actual', this)">Semana actual</div>
+      <div class="tab" onclick="cambiarVista('anterior', this)">Semana anterior</div>
+    </div>
 
-<div class="header">
-  <h1>Ministerio de Limpieza</h1>
-  <h2>Registro Devocional Semanal</h2>
-  <div id="versiculo" class="versiculo">
-    "Porque Dios no es injusto para olvidar vuestra obra…"
-    <div class="referencia">Hebreos 6:10 RV 1960</div>
-  </div>
-</div>
+    <div class="header">
+      <h1>Ministerio de Limpieza</h1>
+      <h2>Registro Devocional Semanal</h2>
+      <div id="versiculo" class="versiculo">
+        "Porque Dios no es injusto para olvidar vuestra obra…"
+        <div class="referencia">Hebreos 6:10 RV 1960</div>
+      </div>
+    </div>
 
-<!-- LOGIN -->
-<div id="login" class="login">
-  <h3>Ingresar Usuario</h3>
-  <input id="usuario" placeholder="Escribe tu usuario">
-  <br>
-  <button onclick="entrar()">Entrar</button>
-</div>
+    <!-- LOGIN -->
+    <div id="login" class="login">
+      <h3>Ingresar Usuario</h3>
+      <input id="usuario" placeholder="Escribe tu usuario">
+      <br>
+      <button onclick="entrar()">Entrar</button>
+    </div>
 
-<!-- APP -->
-<div id="app" style="display:none;">
+    <!-- APP -->
+    <div id="app" style="display:none;">
 
-  <h3 id="titulo"></h3>
+      <h3 id="titulo"></h3>
 
-  <div class="tabla-container">
-    <table>
-      <tr>
-        <th>Día</th>
-        <th>Lectura</th>
-        <th>Oración (min)</th>
-        <th>Lo que Dios me habló</th>
-      </tr>
-      <tbody id="tabla"></tbody>
-    </table>
-  </div>
+      <div class="tabla-container">
+        <table>
+          <tr>
+            <th>Día</th>
+            <th>Lectura</th>
+            <th>Oración (min)</th>
+            <th>Lo que Dios me habló</th>
+          </tr>
+          <tbody id="tabla"></tbody>
+        </table>
+      </div>
 
-  <div class="peticion">
-    <strong>Petición de oración</strong><br><br>
-    <textarea id="peticion"></textarea>
-  </div>
+      <div class="peticion">
+        <strong>Petición de oración</strong><br><br>
+        <textarea id="peticion"></textarea>
+      </div>
 
-  <div class="botones">
-    <button class="guardar" onclick="guardar()">Guardar</button>
-    <button class="enviar"  onclick="enviar()">Enviar</button>
-  </div>
+      <div class="botones">
+        <button class="guardar" onclick="guardar()">Guardar</button>
+        <button class="enviar"  onclick="enviar()">Enviar</button>
+      </div>
 
-</div>
-```
+    </div>
 
   </div>
 
   <!-- ENVÍOS -->
-
   <div id="envios">
     <h3>📋 Envíos recientes</h3>
     <button class="btn-reload" onclick="cargarEnvios()">↻ Actualizar</button>
@@ -451,8 +446,8 @@ to{opacity:1; transform:translateY(0);}
 
 <script>
 
-const URL_POST = "https://script.google.com/macros/s/AKfycbxzNmkOY1BI7rdLwtGzb-ZuhM05Oi3NdAEjjiFWWvviaus4VWLV3s4UaKS1np436BCTMg/exec";
-const URL_GET  = "https://script.google.com/macros/s/AKfycbxzNmkOY1BI7rdLwtGzb-ZuhM05Oi3NdAEjjiFWWvviaus4VWLV3s4UaKS1np436BCTMg/exec";
+const URL_POST = "https://script.google.com/macros/s/AKfycbxZdyLH2zpiLOFE-oqsWlEAHZHjqB5qlZEshniO-u9GXay1k7dh_MMrYKHS_sGw-fXImA/exec";
+const URL_GET  = "https://script.google.com/macros/s/AKfycbxZdyLH2zpiLOFE-oqsWlEAHZHjqB5qlZEshniO-u9GXay1k7dh_MMrYKHS_sGw-fXImA/exec";
 
 const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario = "";
@@ -529,208 +524,217 @@ function crearTabla(){
     html += `<tr>
       <td><span class="dia-badge">${d}</span></td>
       <td><textarea id="${d}-lectura"></textarea></td>
-
-```
-  <td><textarea id="${d}-oracion"></textarea></td>
-  <td><textarea id="${d}-dios"></textarea></td>
-</tr>`;
-```
-
-});
-document.getElementById(“tabla”).innerHTML = html;
+      <td><textarea id="${d}-oracion"></textarea></td>
+      <td><textarea id="${d}-dios"></textarea></td>
+    </tr>`;
+  });
+  document.getElementById("tabla").innerHTML = html;
 }
 
 // ── GUARDAR / CARGAR ──────────────────────────────
 function guardar(){
-const data = {};
-dias.forEach(d => {
-data[d] = {
-lectura: document.getElementById(d+”-lectura”).value,
-oracion: document.getElementById(d+”-oracion”).value,
-dios:    document.getElementById(d+”-dios”).value
-};
-});
-data[“peticion”] = document.getElementById(“peticion”).value;
-localStorage.setItem(“datos”, JSON.stringify(data));
-alert(“Progreso guardado”);
+  const data = {};
+  dias.forEach(d => {
+    data[d] = {
+      lectura: document.getElementById(d+"-lectura").value,
+      oracion: document.getElementById(d+"-oracion").value,
+      dios:    document.getElementById(d+"-dios").value
+    };
+  });
+  data["peticion"] = document.getElementById("peticion").value;
+  localStorage.setItem("datos", JSON.stringify(data));
+  alert("Progreso guardado");
 }
 
 function cargarDatos(){
-const datos = JSON.parse(localStorage.getItem(“datos”));
-if(!datos) return;
-dias.forEach(d => {
-document.getElementById(d+”-lectura”).value = datos[d]?.lectura || “”;
-document.getElementById(d+”-oracion”).value = datos[d]?.oracion || “”;
-document.getElementById(d+”-dios”).value    = datos[d]?.dios    || “”;
-});
-document.getElementById(“peticion”).value = datos[“peticion”] || “”;
+  const datos = JSON.parse(localStorage.getItem("datos"));
+  if(!datos) return;
+  dias.forEach(d => {
+    document.getElementById(d+"-lectura").value = datos[d]?.lectura || "";
+    document.getElementById(d+"-oracion").value = datos[d]?.oracion || "";
+    document.getElementById(d+"-dios").value    = datos[d]?.dios    || "";
+  });
+  document.getElementById("peticion").value = datos["peticion"] || "";
 }
 
 function cargarAnterior(){
-const datos = JSON.parse(localStorage.getItem(“semanaAnterior”));
-if(!datos) return;
-dias.forEach(d => {
-document.getElementById(d+”-lectura”).value = datos[d]?.lectura || “”;
-document.getElementById(d+”-oracion”).value = datos[d]?.oracion || “”;
-document.getElementById(d+”-dios”).value    = datos[d]?.dios    || “”;
-});
-document.getElementById(“peticion”).value = datos[“peticion”] || “”;
+  const datos = JSON.parse(localStorage.getItem("semanaAnterior"));
+  if(!datos) return;
+  dias.forEach(d => {
+    document.getElementById(d+"-lectura").value = datos[d]?.lectura || "";
+    document.getElementById(d+"-oracion").value = datos[d]?.oracion || "";
+    document.getElementById(d+"-dios").value    = datos[d]?.dios    || "";
+  });
+  document.getElementById("peticion").value = datos["peticion"] || "";
 }
 
 // ── ENVIAR ────────────────────────────────────────
 function enviar(){
-const b = document.querySelector(”.enviar”);
-b.disabled  = true;
-b.innerText = “Enviando…”;
-b.style.background = “gray”;
+  const b = document.querySelector(".enviar");
+  b.disabled  = true;
+  b.innerText = "Enviando…";
+  b.style.background = "gray";
 
-let datos        = [];
-let incompleto   = false;
-let errorOracion = false;
-const peticion   = document.getElementById(“peticion”).value;
+  let datos        = [];
+  let incompleto   = false;
+  let errorOracion = false;
+  const peticion   = document.getElementById("peticion").value;
 
-const horaEnvio = new Date().toLocaleString(“es-ES”,{
-day:“2-digit”, month:“2-digit”, year:“numeric”,
-hour:“2-digit”, minute:“2-digit”
-});
+  const horaEnvio = new Date().toLocaleString("es-ES",{
+    day:"2-digit", month:"2-digit", year:"numeric",
+    hour:"2-digit", minute:"2-digit"
+  });
 
-dias.forEach(d => {
-const lectura = document.getElementById(d+”-lectura”).value.trim();
-const oracion = document.getElementById(d+”-oracion”).value.trim();
-const dios    = document.getElementById(d+”-dios”).value.trim();
+  dias.forEach(d => {
+    const lectura = document.getElementById(d+"-lectura").value.trim();
+    const oracion = document.getElementById(d+"-oracion").value.trim();
+    const dios    = document.getElementById(d+"-dios").value.trim();
 
-```
-if(!lectura || !oracion || !dios) incompleto = true;
-if(!/^\d+$/.test(oracion))       errorOracion = true;
+    if(!lectura || !oracion || !dios) incompleto = true;
+    if(!/^\d+$/.test(oracion))       errorOracion = true;
 
-datos.push({ usuario, dia:d, lectura, oracion, dios, peticion, hora:horaEnvio });
-```
+    datos.push({ usuario, dia:d, lectura, oracion, dios, peticion, hora:horaEnvio });
+  });
 
-});
+  if(incompleto){   alert("Llena todos los campos"); desbloquearBoton(); return; }
+  if(errorOracion){ alert("La oración debe ser solo números"); desbloquearBoton(); return; }
 
-if(incompleto){   alert(“Llena todos los campos”); desbloquearBoton(); return; }
-if(errorOracion){ alert(“La oración debe ser solo números”); desbloquearBoton(); return; }
+  // Guardar como semana anterior
+  const guardarObj = {};
+  dias.forEach(d => {
+    guardarObj[d] = {
+      lectura: document.getElementById(d+"-lectura").value,
+      oracion: document.getElementById(d+"-oracion").value,
+      dios:    document.getElementById(d+"-dios").value
+    };
+  });
+  guardarObj["peticion"] = peticion;
+  localStorage.setItem("semanaAnterior", JSON.stringify(guardarObj));
 
-// Guardar como semana anterior
-const guardarObj = {};
-dias.forEach(d => {
-guardarObj[d] = {
-lectura: document.getElementById(d+”-lectura”).value,
-oracion: document.getElementById(d+”-oracion”).value,
-dios:    document.getElementById(d+”-dios”).value
-};
-});
-guardarObj[“peticion”] = peticion;
-localStorage.setItem(“semanaAnterior”, JSON.stringify(guardarObj));
-
-fetch(URL_POST, {
-method:  “POST”,
-mode:    “no-cors”,
-headers: { “Content-Type”: “application/json” },
-body:    JSON.stringify(datos)
-})
-.then(() => {
-alert(“Enviado correctamente”);
-localStorage.setItem(“tiempoEnvio”, Date.now());
-bloquearBoton();
-localStorage.removeItem(“datos”);
-})
-.catch(() => {
-alert(“Error de conexión”);
-desbloquearBoton();
-});
+  fetch(URL_POST, {
+    method:  "POST",
+    mode:    "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify(datos)
+  })
+  .then(() => {
+    alert("Enviado correctamente");
+    localStorage.setItem("tiempoEnvio", Date.now());
+    bloquearBoton();
+    localStorage.removeItem("datos");
+  })
+  .catch(() => {
+    alert("Error de conexión");
+    desbloquearBoton();
+  });
 }
 
 function controlarEnvio(){
-const t = localStorage.getItem(“tiempoEnvio”);
-if(t){
-const diff = Date.now() - parseInt(t);
-if(diff < 60000){ bloquearBoton(); setTimeout(desbloquearBoton, 60000 - diff); }
-}
+  const t = localStorage.getItem("tiempoEnvio");
+  if(t){
+    const diff = Date.now() - parseInt(t);
+    if(diff < 60000){ bloquearBoton(); setTimeout(desbloquearBoton, 60000 - diff); }
+  }
 }
 
 function bloquearBoton(){
-const b = document.querySelector(”.enviar”);
-b.disabled         = true;
-b.innerText        = “Ya se ha enviado tu devocional”;
-b.style.background = “gray”;
+  const b = document.querySelector(".enviar");
+  b.disabled         = true;
+  b.innerText        = "Ya se ha enviado tu devocional";
+  b.style.background = "gray";
 }
 
 function desbloquearBoton(){
-const b = document.querySelector(”.enviar”);
-b.disabled         = false;
-b.innerText        = “Enviar”;
-b.style.background = “linear-gradient(135deg,#1f6fb2,#0b3d91)”;
-localStorage.removeItem(“tiempoEnvio”);
+  const b = document.querySelector(".enviar");
+  b.disabled         = false;
+  b.innerText        = "Enviar";
+  b.style.background = "linear-gradient(135deg,#1f6fb2,#0b3d91)";
+  localStorage.removeItem("tiempoEnvio");
 }
 
-// ── CARGAR ENVÍOS ─────────────────────────────────
+// ── CARGAR ENVÍOS (JSONP para evitar CORS) ────────
 function cargarEnvios(){
-document.getElementById(“listaEnvios”).innerHTML = “<p class='sin-datos'>Cargando…</p>”;
+  document.getElementById("listaEnvios").innerHTML = "<p class='sin-datos'>Cargando…</p>";
 
-fetch(URL_GET)
-.then(res => res.json())
-.then(data => {
-if(!Array.isArray(data) || data.length === 0){
-document.getElementById(“listaEnvios”).innerHTML = “<p class='sin-datos'>No hay envíos todavía</p>”;
-return;
-}
+  // Limpiar callback anterior si existe
+  if(window.__jsonpTimeout) clearTimeout(window.__jsonpTimeout);
+  const oldScript = document.getElementById("jsonp-script");
+  if(oldScript) oldScript.remove();
 
-```
-let html = "";
-data.forEach(g => {
-  const min = parseInt(g.tiempo) || 0;
-  const hrs = min > 0 ? ` (${(min / 60).toFixed(2)} hrs)` : "";
-  const tiempoTxt = min > 0 ? `${min} min${hrs}` : (g.tiempo || "—");
+  const callbackName = "jsonpCallback_" + Date.now();
 
-  const petTxt = g.peticion
-    ? `<div class='peticion-txt'>🙏 ${escHtml(g.peticion)}</div>`
-    : "";
+  window[callbackName] = function(data){
+    clearTimeout(window.__jsonpTimeout);
+    document.getElementById("jsonp-script").remove();
+    delete window[callbackName];
 
-  html += `
-    <div class='card-envio'>
-      <div class='cabecera'>
-        <span class='nombre'>👤 ${escHtml(g.usuario)}</span>
-        <span class='hora'>🕐 ${escHtml(g.fecha)}</span>
-      </div>
-      <div class='detalle'>
-        <span class='tag-oracion'>⏱ ${escHtml(tiempoTxt)}</span>
-      </div>
-      ${petTxt}
-    </div>`;
-});
+    if(!Array.isArray(data) || data.length === 0){
+      document.getElementById("listaEnvios").innerHTML = "<p class='sin-datos'>No hay envíos todavía</p>";
+      return;
+    }
 
-document.getElementById("listaEnvios").innerHTML = html;
-```
+    let html = "";
+    data.forEach(g => {
+      const min = parseInt(g.tiempo) || 0;
+      const hrs = min > 0 ? ` (${(min / 60).toFixed(2)} hrs)` : "";
+      const tiempoTxt = min > 0 ? `${min} min${hrs}` : (g.tiempo || "—");
 
-})
-.catch(() => {
-document.getElementById(“listaEnvios”).innerHTML = “<p class='sin-datos'>Error al conectar con el servidor</p>”;
-});
+      const petTxt = g.peticion
+        ? `<div class='peticion-txt'>🙏 ${escHtml(g.peticion)}</div>`
+        : "";
+
+      html += `
+        <div class='card-envio'>
+          <div class='cabecera'>
+            <span class='nombre'>👤 ${escHtml(g.usuario)}</span>
+            <span class='hora'>🕐 ${escHtml(g.fecha)}</span>
+          </div>
+          <div class='detalle'>
+            <span class='tag-oracion'>⏱ ${escHtml(tiempoTxt)}</span>
+          </div>
+          ${petTxt}
+        </div>`;
+    });
+
+    document.getElementById("listaEnvios").innerHTML = html;
+  };
+
+  // Timeout de seguridad (10 segundos)
+  window.__jsonpTimeout = setTimeout(() => {
+    const s = document.getElementById("jsonp-script");
+    if(s) s.remove();
+    if(window[callbackName]) delete window[callbackName];
+    document.getElementById("listaEnvios").innerHTML = "<p class='sin-datos'>Error al conectar con el servidor</p>";
+  }, 10000);
+
+  const script = document.createElement("script");
+  script.id  = "jsonp-script";
+  script.src = URL_GET + "?callback=" + callbackName;
+  document.body.appendChild(script);
 }
 
 function escHtml(str){
-return String(str)
-.replace(/&/g,”&”)
-.replace(/</g,”<”)
-.replace(/>/g,”>”);
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
 }
 
 // ── BOTÓN SECRETO ─────────────────────────────────
 function activarBotonSecreto(){
-const t = document.getElementById(“titulo”);
-t.addEventListener(“click”, () => {
-contadorClicks++;
-if(contadorClicks === 5){
-if(confirm(”¿Deseas cambiar de usuario?”)){
-localStorage.removeItem(“usuario”);
-localStorage.removeItem(“datos”);
-location.reload();
-}
-contadorClicks = 0;
-}
-setTimeout(() => { contadorClicks = 0; }, 1500);
-});
+  const t = document.getElementById("titulo");
+  t.addEventListener("click", () => {
+    contadorClicks++;
+    if(contadorClicks === 5){
+      if(confirm("¿Deseas cambiar de usuario?")){
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("datos");
+        location.reload();
+      }
+      contadorClicks = 0;
+    }
+    setTimeout(() => { contadorClicks = 0; }, 1500);
+  });
 }
 
 </script>
