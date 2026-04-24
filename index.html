@@ -446,8 +446,8 @@ to{opacity:1; transform:translateY(0);}
 
 <script>
 
-const URL_POST = "https://script.google.com/macros/s/AKfycbyhTfyGJ4hMBv465a6dpnR9eMs8f3-UwUhuNQ3wn5SO5lfmllZv7p8dOETpiRsSnlWFCA/exec";
-const URL_GET  = "https://script.google.com/macros/s/AKfycbyhTfyGJ4hMBv465a6dpnR9eMs8f3-UwUhuNQ3wn5SO5lfmllZv7p8dOETpiRsSnlWFCA/exec";
+const URL_POST = "https://script.google.com/macros/s/AKfycbxZdyLH2zpiLOFE-oqsWlEAHZHjqB5qlZEshniO-u9GXay1k7dh_MMrYKHS_sGw-fXImA/exec";
+const URL_GET  = "https://script.google.com/macros/s/AKfycbxZdyLH2zpiLOFE-oqsWlEAHZHjqB5qlZEshniO-u9GXay1k7dh_MMrYKHS_sGw-fXImA/exec";
 
 const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario = "";
@@ -679,7 +679,21 @@ function cargarEnvios(){
       const hrs = min > 0 ? ` (${(min / 60).toFixed(2)} hrs)` : "";
       const tiempoTxt = min > 0 ? `${min} min${hrs}` : (g.tiempo || "—");
 
-      const petTxt = g.peticion
+      // Formatear fecha ISO a dd/MM/yyyy HH:mm
+      let fechaMostrar = g.fecha || "—";
+      if(fechaMostrar && fechaMostrar !== "—"){
+        const df = new Date(fechaMostrar);
+        if(!isNaN(df.getTime())){
+          const dd   = String(df.getDate()).padStart(2,"0");
+          const mm   = String(df.getMonth()+1).padStart(2,"0");
+          const yyyy = df.getFullYear();
+          const hh   = String(df.getHours()).padStart(2,"0");
+          const mn   = String(df.getMinutes()).padStart(2,"0");
+          fechaMostrar = `${dd}/${mm}/${yyyy} ${hh}:${mn}`;
+        }
+      }
+
+      const petTxt = g.peticion && g.peticion !== "-"
         ? `<div class='peticion-txt'>🙏 ${escHtml(g.peticion)}</div>`
         : "";
 
@@ -687,7 +701,7 @@ function cargarEnvios(){
         <div class='card-envio'>
           <div class='cabecera'>
             <span class='nombre'>👤 ${escHtml(g.usuario)}</span>
-            <span class='hora'>🕐 ${escHtml(g.fecha)}</span>
+            <span class='hora'>🕐 ${escHtml(fechaMostrar)}</span>
           </div>
           <div class='detalle'>
             <span class='tag-oracion'>⏱ ${escHtml(tiempoTxt)}</span>
