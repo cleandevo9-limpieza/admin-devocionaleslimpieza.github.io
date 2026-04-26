@@ -352,12 +352,56 @@ transform:none;
 box-shadow:none;
 }
 
+/* ── BOTÓN FLOTANTE IMPRIMIR ── */
+.btn-imprimir-flotante{
+position:fixed;
+bottom:24px;
+right:24px;
+background:linear-gradient(135deg,#1f6fb2,#0b3d91);
+color:white;
+border:none;
+border-radius:50px;
+padding:14px 22px;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+display:none;
+z-index:999;
+transition:0.25s;
+flex:unset;
+}
+
+.btn-imprimir-flotante:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 25px rgba(0,0,0,0.25);
+}
+
+/* ── ESTILOS DE IMPRESIÓN ── */
+@media print{
+body *{ visibility:hidden; }
+#area-impresion, #area-impresion *{ visibility:visible; }
+#area-impresion{
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  padding:30px;
+  box-sizing:border-box;
+}
+}
+
 @media(max-width:768px){
 .container{padding:18px;}
 td{padding:6px 10px;}
 textarea{
 min-height:70px;
 height:70px;
+}
+.btn-imprimir-flotante{
+bottom:16px;
+right:16px;
+padding:12px 18px;
+font-size:14px;
 }
 }
 
@@ -444,6 +488,14 @@ to{opacity:1; transform:translateY(0);}
 
 </div>
 
+<!-- BOTÓN FLOTANTE -->
+<button class="btn-imprimir-flotante" id="btnImprimir" onclick="imprimirPeticiones()">
+  🙏 Imprimir peticiones
+</button>
+
+<!-- ÁREA OCULTA PARA IMPRESIÓN -->
+<div id="area-impresion" style="display:none;"></div>
+
 <script>
 
 const URL_POST = "https://script.google.com/macros/s/AKfycbzUALo4H2xLrRTQTXre3Uq7FhzrxMntvstPfgWR8kC4QYHm1_TgjBmtaa-LmdTnzWaezQ/exec";
@@ -462,12 +514,15 @@ function toggleMenu(){
 
 function mostrarVista(v){
   document.getElementById("menu").style.display = "none";
+  const btnImprimir = document.getElementById("btnImprimir");
   if(v === "devocional"){
     document.getElementById("contenidoPrincipal").style.display = "block";
     document.getElementById("envios").style.display = "none";
+    btnImprimir.style.display = "none";
   } else {
     document.getElementById("contenidoPrincipal").style.display = "none";
     document.getElementById("envios").style.display = "block";
+    btnImprimir.style.display = "block";
     cargarEnvios();
   }
 }
@@ -656,7 +711,6 @@ function desbloquearBoton(){
 function cargarEnvios(){
   document.getElementById("listaEnvios").innerHTML = "<p class='sin-datos'>Cargando…</p>";
 
-  // Limpiar callback anterior si existe
   if(window.__jsonpTimeout) clearTimeout(window.__jsonpTimeout);
   const oldScript = document.getElementById("jsonp-script");
   if(oldScript) oldScript.remove();
@@ -679,7 +733,6 @@ function cargarEnvios(){
       const hrs = min > 0 ? ` (${(min / 60).toFixed(2)} hrs)` : "";
       const tiempoTxt = min > 0 ? `${min} min${hrs}` : (g.tiempo || "—");
 
-      // Formatear fecha ISO a dd/MM/yyyy HH:mm
       let fechaMostrar = g.fecha || "—";
       if(fechaMostrar && fechaMostrar !== "—"){
         const df = new Date(fechaMostrar);
@@ -713,7 +766,6 @@ function cargarEnvios(){
     document.getElementById("listaEnvios").innerHTML = html;
   };
 
-  // Timeout de seguridad (10 segundos)
   window.__jsonpTimeout = setTimeout(() => {
     const s = document.getElementById("jsonp-script");
     if(s) s.remove();
@@ -732,6 +784,58 @@ function escHtml(str){
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
+}
+
+// ── IMPRIMIR PETICIONES ───────────────────────────
+function imprimirPeticiones(){
+  const cards = document.querySelectorAll(".card-envio");
+  let contenido = `
+    <div style="font-family:sans-serif; padding:10px;">
+      <h2 style="color:#1f6fb2; margin-bottom:6px; font-size:20px;">
+        Peticiones de oración — Ministerio de Limpieza
+      </h2>
+      <p style="color:#888; font-size:13px; margin-top:0; margin-bottom:20px;">
+        Generado el ${new Date().toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"})}
+      </p>
+  `;
+  let encontradas = 0;
+
+  cards.forEach(card => {
+    const peticionEl = card.querySelector(".peticion-txt");
+    const nombreEl  = card.querySelector(".nombre");
+
+    if(peticionEl && nombreEl){
+      const texto = peticionEl.innerText.replace("🙏 ", "").trim();
+      if(texto && texto !== "-" && texto !== ""){
+        encontradas++;
+        contenido += `
+          <div style="
+            border-left:4px solid #1f6fb2;
+            padding:12px 16px;
+            margin-bottom:16px;
+            background:#f5f9ff;
+            border-radius:0 10px 10px 0;
+          ">
+            <div style="font-size:12px; color:#888; margin-bottom:6px; font-weight:600;">
+              ${nombreEl.innerText.replace("👤 ", "")}
+            </div>
+            <div style="font-size:15px; color:#1a2a44; line-height:1.5;">
+              ${texto}
+            </div>
+          </div>`;
+      }
+    }
+  });
+
+  contenido += "</div>";
+
+  if(encontradas === 0){
+    alert("No hay peticiones de oración registradas en los envíos actuales.");
+    return;
+  }
+
+  document.getElementById("area-impresion").innerHTML = contenido;
+  window.print();
 }
 
 // ── BOTÓN SECRETO ─────────────────────────────────
