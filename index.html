@@ -352,7 +352,7 @@ transform:none;
 box-shadow:none;
 }
 
-/* ── BOTÓN FLOTANTE IMPRIMIR ── */
+/* ── BOTÓN FLOTANTE ── */
 .btn-imprimir-flotante{
 position:fixed;
 bottom:24px;
@@ -377,13 +377,17 @@ transform:translateY(-3px);
 box-shadow:0 12px 25px rgba(0,0,0,0.25);
 }
 
+/* ── ÁREA DE IMPRESIÓN (oculta en pantalla) ── */
+#area-impresion{
+display:none;
+}
+
 /* ── ESTILOS DE IMPRESIÓN ── */
 @media print{
-body *{ visibility:hidden; }
-#area-impresion, #area-impresion *{ visibility:visible; }
+body > *:not(#area-impresion){ display:none !important; }
 #area-impresion{
-  position:fixed;
-  top:0; left:0;
+  display:block !important;
+  position:static;
   width:100%;
   padding:30px;
   box-sizing:border-box;
@@ -494,7 +498,7 @@ to{opacity:1; transform:translateY(0);}
 </button>
 
 <!-- ÁREA OCULTA PARA IMPRESIÓN -->
-<div id="area-impresion" style="display:none;"></div>
+<div id="area-impresion"></div>
 
 <script>
 
@@ -654,7 +658,6 @@ function enviar(){
   if(incompleto){   alert("Llena todos los campos"); desbloquearBoton(); return; }
   if(errorOracion){ alert("La oración debe ser solo números"); desbloquearBoton(); return; }
 
-  // Guardar como semana anterior
   const guardarObj = {};
   dias.forEach(d => {
     guardarObj[d] = {
@@ -707,7 +710,7 @@ function desbloquearBoton(){
   localStorage.removeItem("tiempoEnvio");
 }
 
-// ── CARGAR ENVÍOS (JSONP para evitar CORS) ────────
+// ── CARGAR ENVÍOS (JSONP) ─────────────────────────
 function cargarEnvios(){
   document.getElementById("listaEnvios").innerHTML = "<p class='sin-datos'>Cargando…</p>";
 
@@ -805,10 +808,9 @@ function imprimirPeticiones(){
     const nombreEl  = card.querySelector(".nombre");
 
     if(peticionEl && nombreEl){
-     // DESPUÉS
-const texto = peticionEl.innerText.replace("🙏 ", "").trim();
-const textoLimpio = texto.replace(/[.\s\-_,;:!?]/g, "");
-if(textoLimpio.length >= 3){
+      const texto = peticionEl.innerText.replace("🙏 ", "").trim();
+      const textoLimpio = texto.replace(/[.\s\-_,;:!?]/g, "");
+      if(textoLimpio.length >= 3){
         encontradas++;
         contenido += `
           <div style="
@@ -832,12 +834,15 @@ if(textoLimpio.length >= 3){
   contenido += "</div>";
 
   if(encontradas === 0){
-    alert("No hay peticiones de oración registradas en los envíos actuales.");
+    alert("No hay peticiones de oración registradas.");
     return;
   }
 
-  document.getElementById("area-impresion").innerHTML = contenido;
+  const area = document.getElementById("area-impresion");
+  area.innerHTML = contenido;
+  area.style.display = "block";
   window.print();
+  area.style.display = "none";
 }
 
 // ── BOTÓN SECRETO ─────────────────────────────────
