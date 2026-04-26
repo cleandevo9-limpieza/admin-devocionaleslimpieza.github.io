@@ -805,8 +805,10 @@ function imprimirPeticiones(){
     const nombreEl  = card.querySelector(".nombre");
 
     if(peticionEl && nombreEl){
-      const texto = peticionEl.innerText.replace("🙏 ", "").trim();
-      if(texto && texto !== "-" && texto !== ""){
+     // DESPUÉS
+const texto = peticionEl.innerText.replace("🙏 ", "").trim();
+const textoLimpio = texto.replace(/[.\s\-_,;:!?]/g, "");
+if(textoLimpio.length >= 3){
         encontradas++;
         contenido += `
           <div style="
