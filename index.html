@@ -1,3 +1,4 @@
+cat > /mnt/user-data/outputs/ministerio.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -152,6 +153,7 @@ vertical-align:top;
 background:white;
 border-radius:16px;
 box-shadow:0 6px 18px rgba(0,0,0,0.06);
+transition:background 0.4s, box-shadow 0.4s;
 }
 
 td:first-child{
@@ -238,6 +240,17 @@ box-shadow:0 0 0 3px rgba(192,57,43,0.12) !important;
 .oracion-input.readonly{
 background:#f0f0f0;
 pointer-events:none;
+}
+
+/* ── FILA ENVIADA ── */
+tr.fila-enviada td{
+background:#f0faf5;
+box-shadow:0 6px 18px rgba(31,155,94,0.08);
+}
+
+tr.fila-enviada .dia-badge{
+background:#d4f5e7;
+color:#1f7a4a;
 }
 
 .peticion{
@@ -408,6 +421,39 @@ box-shadow:0 12px 25px rgba(0,0,0,0.25);
 
 #area-impresion{ display:none; }
 
+/* ── TOAST ── */
+.toast{
+position:fixed;
+bottom:30px;
+left:50%;
+transform:translateX(-50%) translateY(20px);
+background:#1a2a44;
+color:white;
+padding:12px 22px;
+border-radius:50px;
+font-size:14px;
+font-weight:500;
+box-shadow:0 8px 24px rgba(0,0,0,0.18);
+opacity:0;
+transition:opacity 0.3s, transform 0.3s;
+z-index:9999;
+pointer-events:none;
+white-space:nowrap;
+}
+
+.toast.toast-exito{
+background:linear-gradient(135deg,#1f9b5e,#0f6e40);
+}
+
+.toast.toast-error{
+background:linear-gradient(135deg,#c0392b,#922b21);
+}
+
+.toast.visible{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+
 @media print{
 body > *:not(#area-impresion){ display:none !important; }
 #area-impresion{
@@ -454,6 +500,8 @@ button{ padding:14px; font-size:14px; }
   padding:12px 18px;
   font-size:14px;
 }
+
+.toast{ font-size:13px; padding:10px 18px; }
 }
 
 @keyframes fadeIn{
@@ -540,6 +588,7 @@ to{opacity:1;transform:translateY(0);}
 </button>
 
 <div id="area-impresion"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 
@@ -550,31 +599,40 @@ const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb"];
 let usuario = "";
 let contadorClicks = 0;
 let vista = "actual";
+let toastTimer = null;
+
+// ── TOAST ─────────────────────────────────────────
+function mostrarToast(msg, tipo = ""){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast" + (tipo ? " toast-" + tipo : "");
+  // forzar reflow para reiniciar animación
+  void t.offsetWidth;
+  t.classList.add("visible");
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove("visible"); }, 3000);
+}
 
 // ── PARSEAR TIEMPO ────────────────────────────────
 function parsearTiempo(raw){
   let s = raw.trim().toLowerCase();
   if(!s) return { ok:false };
 
-  // Normalizar palabras en español
   s = s
     .replace(/horas?/g,   "h")
     .replace(/minutos?/g, "m")
     .replace(/mins?/g,    "m")
     .replace(/hrs?/g,     "h");
 
-  // Quitar espacios entre número y unidad: "1 h 30 m" → "1h30m"
   s = s.replace(/(\d)\s+([hm])/g, "$1$2");
   s = s.replace(/([hm])\s+(\d)/g, "$1$2");
 
   let h = 0, m = 0;
   let match;
 
-  // Formato 1:30
   match = s.match(/^(\d+):(\d{1,2})$/);
   if(match){ h = parseInt(match[1]); m = parseInt(match[2]); }
 
-  // Formato 1h30m / 1h30 / 1h / 30m
   if(!match){
     match = s.match(/^(?:(\d+)h)?(?:(\d+)m)?$/);
     if(match && (match[1] || match[2])){
@@ -583,7 +641,6 @@ function parsearTiempo(raw){
     } else { match = null; }
   }
 
-  // Solo número → minutos (incluye 0, 00, 000)
   if(!match){
     match = s.match(/^(\d+)$/);
     if(match){ h = 0; m = parseInt(match[1]); }
@@ -591,7 +648,6 @@ function parsearTiempo(raw){
 
   if(!match) return { ok:false };
 
-  // Pasar exceso de minutos a horas
   h += Math.floor(m / 60);
   m  = m % 60;
 
@@ -648,7 +704,7 @@ window.onload = function(){
 
 function entrar(){
   usuario = document.getElementById("usuario").value.trim();
-  if(!usuario){ alert("Escribe un usuario"); return; }
+  if(!usuario){ mostrarToast("Escribe un usuario", "error"); return; }
   localStorage.setItem("usuario", usuario);
   document.getElementById("login").style.display  = "none";
   document.getElementById("app").style.display    = "block";
@@ -678,7 +734,7 @@ function bloquearEdicion(estado){
 function crearTabla(){
   let html = "";
   dias.forEach(d => {
-    html += `<tr>
+    html += `<tr id="fila-${d}">
       <td><span class="dia-badge">${d}</span></td>
       <td><textarea id="${d}-lectura"></textarea></td>
       <td>
@@ -711,6 +767,21 @@ function validarOracion(d){
   }
 }
 
+// ── MARCAR FILAS COMO ENVIADAS ────────────────────
+function marcarFilasEnviadas(){
+  dias.forEach(d => {
+    const fila = document.getElementById("fila-" + d);
+    if(fila) fila.classList.add("fila-enviada");
+  });
+}
+
+function desmarcarFilas(){
+  dias.forEach(d => {
+    const fila = document.getElementById("fila-" + d);
+    if(fila) fila.classList.remove("fila-enviada");
+  });
+}
+
 // ── GUARDAR / CARGAR ──────────────────────────────
 function guardar(){
   const data = {};
@@ -723,7 +794,7 @@ function guardar(){
   });
   data["peticion"] = document.getElementById("peticion").value;
   localStorage.setItem("datos", JSON.stringify(data));
-  alert("Progreso guardado");
+  mostrarToast("✓ Progreso guardado", "exito");
 }
 
 function cargarDatos(){
@@ -786,15 +857,15 @@ function enviar(){
   });
 
   if(incompleto){
-    alert("Llena todos los campos");
+    mostrarToast("⚠️ Llena todos los campos", "error");
     desbloquearBoton(); return;
   }
   if(excedeTiempo){
-    alert("El tiempo de oración no puede exceder 5 horas");
+    mostrarToast("⚠️ El tiempo no puede exceder 5 horas", "error");
     desbloquearBoton(); return;
   }
   if(errorOracion){
-    alert("Revisa el tiempo de oración.\nEjemplos válidos:\n30 · 1:30 · 1h30m · 1 hora 30 minutos");
+    mostrarToast("⚠️ Revisa el tiempo de oración", "error");
     desbloquearBoton(); return;
   }
 
@@ -816,13 +887,14 @@ function enviar(){
     body:    JSON.stringify(datos)
   })
   .then(() => {
-    alert("Enviado correctamente");
+    mostrarToast("✓ Devocional enviado correctamente", "exito");
     localStorage.setItem("tiempoEnvio", Date.now());
     bloquearBoton();
+    marcarFilasEnviadas();
     localStorage.removeItem("datos");
   })
   .catch(() => {
-    alert("Error de conexión");
+    mostrarToast("✗ Error de conexión, intenta de nuevo", "error");
     desbloquearBoton();
   });
 }
@@ -831,15 +903,19 @@ function controlarEnvio(){
   const t = localStorage.getItem("tiempoEnvio");
   if(t){
     const diff = Date.now() - parseInt(t);
-    if(diff < 60000){ bloquearBoton(); setTimeout(desbloquearBoton, 60000 - diff); }
+    if(diff < 60000){
+      bloquearBoton();
+      marcarFilasEnviadas();
+      setTimeout(() => { desbloquearBoton(); desmarcarFilas(); }, 60000 - diff);
+    }
   }
 }
 
 function bloquearBoton(){
   const b = document.querySelector(".enviar");
   b.disabled         = true;
-  b.innerText        = "Ya se ha enviado tu devocional";
-  b.style.background = "gray";
+  b.innerText        = "✓ Devocional enviado";
+  b.style.background = "linear-gradient(135deg,#1f9b5e,#0f6e40)";
 }
 
 function desbloquearBoton(){
@@ -970,7 +1046,7 @@ function imprimirPeticiones(){
   contenido += "</div>";
 
   if(encontradas === 0){
-    alert("No hay peticiones de oración registradas.");
+    mostrarToast("No hay peticiones registradas", "error");
     return;
   }
 
@@ -1001,3 +1077,8 @@ function activarBotonSecreto(){
 </script>
 </body>
 </html>
+ENDOFFILE
+echo "OK"
+Salida
+
+OK
