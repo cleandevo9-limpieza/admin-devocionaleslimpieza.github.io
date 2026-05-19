@@ -44,7 +44,7 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
   box-shadow:0 3px 12px rgba(0,0,0,.06);
   padding:10px 12px;
   display:grid;
-  grid-template-columns: 38px 1fr 90px 1fr;
+  grid-template-columns: 38px 1fr 115px 0.8fr;
   gap:6px;
   align-items:start;
   transition:background .3s;
@@ -82,6 +82,8 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
   resize:none;height:72px;display:block;
 }
 .oracion-input:focus{ border:2px solid var(--azul-mid);background:white;box-shadow:0 0 0 3px rgba(77,163,255,.15); }
+.oracion-input.valido{ border:2px solid #1f9b5e!important;background:#f0faf5!important;box-shadow:0 0 0 3px rgba(31,155,94,.12)!important; }
+.oracion-input.invalido{ border:2px solid var(--rojo)!important;background:#fff5f5!important;box-shadow:0 0 0 3px rgba(192,57,43,.12)!important; }
 .oracion-input.readonly{ background:#f0f0f0;pointer-events:none; }
 
 /* EXTRA */
@@ -153,33 +155,6 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
 
 @keyframes fadeIn{ from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);} }
 
-/* ══ ESTILOS PDF — Blanco y negro, fiel al original ══ */
-.pdf-wrap{ font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;padding:28px 32px;color:#000;background:white;max-width:800px;margin:0 auto; }
-.pdf-top{ display:flex;align-items:center;gap:16px;margin-bottom:6px; }
-.pdf-logo-box{ width:52px;height:52px;border-radius:50%;border:2px solid #000;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-.pdf-logo-text{ font-size:9px;font-weight:900;color:#000;text-align:center;line-height:1.2; }
-.pdf-titulo{ font-size:22px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#000; }
-.pdf-hr{ border:none;border-top:2px solid #000;margin:6px 0; }
-.pdf-versiculo{ font-size:10.5px;font-style:italic;color:#000;margin-bottom:12px;text-align:center; }
-.pdf-meta{ display:flex;justify-content:space-between;font-size:12px;font-weight:700;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:14px; }
-.pdf-meta-val{ font-weight:400;border-bottom:1px solid #555;min-width:180px;display:inline-block;padding-bottom:1px;margin-left:4px; }
-
-.pdf-table{ width:100%;border-collapse:collapse;font-size:10.5px; }
-.pdf-table th{ border:1.5px solid #000;padding:6px 7px;text-align:center;font-weight:900;font-size:10px;text-transform:uppercase;background:white;color:#000; }
-.pdf-table td{ border:1px solid #555;padding:7px 8px;vertical-align:top;background:white;color:#000; }
-.pdf-table td:first-child{ font-weight:800;text-align:center;font-size:11px;width:58px;min-width:58px;vertical-align:middle; }
-
-/* Checkboxes de oración en PDF */
-.pdf-checks{ display:flex;flex-direction:column;gap:3px; }
-.pdf-check-row{ display:flex;align-items:center;gap:5px;font-size:10px; }
-.pdf-box{ width:11px;height:11px;border:1.5px solid #000;border-radius:2px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0; }
-.pdf-box.marcado::after{ content:"✓";font-size:9px;font-weight:900;line-height:1; }
-
-.pdf-text-cell{ font-size:10.5px;line-height:1.55;color:#000;min-height:32px; }
-.pdf-peticiones{ margin-top:16px;border:1.5px solid #000; }
-.pdf-peticiones-header{ border-bottom:1.5px solid #000;font-weight:800;font-size:11px;padding:6px 10px;text-transform:uppercase;background:white; }
-.pdf-peticiones-body{ padding:10px;font-size:11px;color:#000;min-height:52px;line-height:1.65; }
-.pdf-footer{ margin-top:12px;text-align:center;font-size:9px;color:#888; }
 </style>
 </head>
 <body>
@@ -188,8 +163,6 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
 <div class="menu" id="menu">
   <div onclick="mostrarVista('devocional')">📖 Mi devocional</div>
   <div onclick="mostrarVista('envios')">📋 Envíos</div>
-  <div class="menu-sep"></div>
-  <div onclick="imprimirDevocional()">🖨️ Imprimir / Exportar PDF</div>
 </div>
 
 <div class="container">
@@ -220,7 +193,7 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
       <h3 id="titulo"></h3>
 
       <!-- Encabezados de columna -->
-      <div style="display:grid;grid-template-columns:38px 1fr 90px 1fr;gap:6px;padding:0 12px;margin-top:10px;">
+      <div style="display:grid;grid-template-columns:38px 1fr 115px 0.8fr;gap:6px;padding:0 12px;margin-top:10px;">
         <div></div>
         <div class="col-label" style="font-size:9px;font-weight:700;color:var(--azul);opacity:.6;text-transform:uppercase;letter-spacing:.4px;">Lectura (Biblia)</div>
         <div class="col-label" style="font-size:9px;font-weight:700;color:var(--azul);opacity:.6;text-transform:uppercase;letter-spacing:.4px;">Oración</div>
@@ -407,7 +380,7 @@ function crearTabla(){
         <textarea class="tabla-input" id="${d}-lectura"></textarea>
       </div>
       <div class="campo-wrap">
-        <textarea class="oracion-input" id="${d}-oracion"></textarea>
+        <textarea class="oracion-input" id="${d}-oracion" oninput="validarOracion('${d}')"></textarea>
       </div>
       <div class="campo-wrap">
         <textarea class="tabla-input" id="${d}-dios"></textarea>
@@ -419,6 +392,16 @@ function crearTabla(){
 
 
 
+
+// ── VALIDAR ORACIÓN
+function validarOracion(d){
+  const el=document.getElementById(d+"-oracion");
+  const val=el.value.trim();
+  if(!val){ el.classList.remove("valido","invalido"); return; }
+  const r=parsearTiempo(val);
+  if(r&&r.ok){ el.classList.add("valido"); el.classList.remove("invalido"); }
+  else { el.classList.add("invalido"); el.classList.remove("valido"); }
+}
 
 // ── MARCAR ENVIADAS
 function marcarFilasEnviadas(){
@@ -578,96 +561,6 @@ function imprimirPeticiones(){
   if(!n){mostrarToast("No hay peticiones registradas","error");return;}
   const a=document.getElementById("area-impresion");
   a.innerHTML=html;a.style.display="block";window.print();a.style.display="none";
-}
-
-// ── IMPRIMIR DEVOCIONAL — blanco y negro, fiel al PDF original
-function imprimirDevocional(){
-  document.getElementById("menu").style.display="none";
-  if(!usuario){mostrarToast("Inicia sesión primero","error");return;}
-
-  const libro=(document.getElementById("libro")||{}).value||"";
-  const peticion=(document.getElementById("peticion")||{}).value||"";
-  const fecha=new Date().toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
-
-  // Función checkboxes oración — detecta nivel desde el texto libre
-  function checksHTML(d){
-    const raw=(document.getElementById(d+"-oracion")||{}).value||"";
-    const txt=raw.trim().toLowerCase();
-    // Detectar nivel aproximado
-    let idx=null;
-    // parsear minutos
-    let mins=null;
-    const p=parsearTiempo(raw);
-    if(p&&p.ok) mins=p.total;
-    if(mins!==null){
-      if(mins>=55&&mins<=75) idx=0;       // ~1hr
-      else if(mins>=80&&mins<=100) idx=1; // ~1:30hr
-      else if(mins>=110&&mins<=130) idx=2;// ~2hr
-      else if(mins>130) idx=3;            // Más
-    }
-    const etiquetas=["1 hr","1:30 hr","2 hr","Más"];
-    let html="<div class='pdf-checks'>";
-    etiquetas.forEach((lbl,i)=>{
-      const marcado=(idx===i);
-      html+=`<div class="pdf-check-row"><div class="pdf-box${marcado?" marcado":""}"></div><span>${lbl}</span></div>`;
-    });
-    // Si no encaja en niveles, mostrar el texto debajo
-    if(idx===null&&raw.trim()){
-      html+=`<div style="font-size:9px;font-style:italic;margin-top:3px;color:#333;">${escHtml(raw)}</div>`;
-    }
-    html+="</div>";
-    return html;
-  }
-
-  let filasHtml="";
-  dias.forEach(d=>{
-    const nomDia=diasCompletos[d]||d;
-    const lectura=(document.getElementById(d+"-lectura")||{}).value||"";
-    const dios=(document.getElementById(d+"-dios")||{}).value||"";
-    filasHtml+=`<tr>
-      <td>${nomDia}</td>
-      <td>${checksHTML(d)}</td>
-      <td class="pdf-text-cell">${lectura?escHtml(lectura):"&nbsp;"}</td>
-      <td class="pdf-text-cell">${libro?escHtml(libro):"&nbsp;"}</td>
-      <td class="pdf-text-cell">${dios?escHtml(dios):"&nbsp;"}</td>
-    </tr>`;
-  });
-
-  const contenido=`
-  <div class="pdf-wrap">
-    <div class="pdf-top">
-      <div class="pdf-logo-box"><div class="pdf-logo-text">Ag<br>Viva</div></div>
-      <div class="pdf-titulo">Devocional "Ministración"</div>
-    </div>
-    <hr class="pdf-hr">
-    <div class="pdf-versiculo">"Por tanto, os digo que todo lo que pidieres orando, creed que lo recibiréis, y os vendrá"&nbsp;&nbsp;Mr 11:24</div>
-    <div class="pdf-meta">
-      <div>Nombre:&nbsp;<span class="pdf-meta-val">${escHtml(usuario)}</span></div>
-      <div>Fecha:&nbsp;<span class="pdf-meta-val">${fecha}</span></div>
-    </div>
-    <table class="pdf-table">
-      <thead>
-        <tr>
-          <th>DÍA</th>
-          <th>ORACIÓN</th>
-          <th>BIBLIA</th>
-          <th>LIBRO</th>
-          <th>LO QUE DIOS HABLÓ A MI CORAZÓN</th>
-        </tr>
-      </thead>
-      <tbody>${filasHtml}</tbody>
-    </table>
-    <div class="pdf-peticiones">
-      <div class="pdf-peticiones-header">Peticiones de Oración:</div>
-      <div class="pdf-peticiones-body">${peticion?escHtml(peticion):"&nbsp;"}</div>
-    </div>
-    <div class="pdf-footer">Ministerio de Limpieza · ${fecha}</div>
-  </div>`;
-
-  const a=document.getElementById("area-impresion");
-  a.innerHTML=contenido;a.style.display="block";
-  window.print();
-  a.style.display="none";
 }
 
 // ── BOTÓN SECRETO
