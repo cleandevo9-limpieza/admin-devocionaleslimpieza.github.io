@@ -209,7 +209,7 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
       <div class="seccion-extra">
         <div class="card-extra">
           <div class="card-extra-header">
-            <div class="card-extra-icon libro">📚</div>
+            <div class="card-extra-icon libro"></div>
             <div>
               <div class="card-extra-label">Lectura de libro</div>
               <div class="card-extra-sublabel">¿Qué estás leyendo esta semana?</div>
@@ -219,7 +219,7 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
         </div>
         <div class="card-extra card-extra-oracion">
           <div class="card-extra-header">
-            <div class="card-extra-icon oracion">🙏</div>
+            <div class="card-extra-icon oracion"></div>
             <div>
               <div class="card-extra-label">Petición de oración</div>
               <div class="card-extra-sublabel">Comparte tu petición semanal</div>
@@ -272,10 +272,6 @@ function mostrarToast(msg,tipo=""){
 function parsearTiempo(raw){
   if(!raw||!raw.trim()) return {ok:false};
 
-  // ── CAMBIO 1: rechazar "0", "00", "0h", "0m", "0:00", etc. ──
-  const soloNumero = raw.trim().replace(/^0+$/, "");
-  if(soloNumero === "") return {ok:false}; // era puro ceros
-
   // Si es un nivel estándar
   const idx=NIVELES.findIndex(n=>n===raw.trim());
   if(idx>=0){
@@ -300,9 +296,10 @@ function parsearTiempo(raw){
   h+=Math.floor(m/60);m=m%60;
   const total=h*60+m;
   // ── CAMBIO 1: total=0 también es inválido ──
-  if(total<=0||total>300) return {ok:false,excede:total>300};
+  if(total>300) return {ok:false,excede:true};
   let texto="";
-  if(h>0&&m>0) texto=`${h} hora${h>1?"s":""} ${m} minuto${m>1?"s":""}`;
+  if(total===0) texto="0 minutos";
+  else if(h>0&&m>0) texto=`${h} hora${h>1?"s":""} ${m} minuto${m>1?"s":""}`;
   else if(h>0) texto=`${h} hora${h>1?"s":""}`;
   else texto=`${m} minuto${m>1?"s":""}`;
   return {ok:true,texto,total};
@@ -403,18 +400,31 @@ function crearTabla(){
 }
 
 
-// ── CAMBIO 2: validar con estado de foco ──
-// conFoco=true  → puede mostrar verde (enfocado-valido)
-// conFoco=false → solo muestra rojo si inválido, nunca verde
+// Detecta si el valor "parece" un intento de escribir tiempo
+// (contiene dígitos combinados con h/m/: o es solo dígitos cortos ≤3 chars)
+function pareceIntento(val){
+  const s = val.trim().toLowerCase();
+  // Contiene letras de tiempo o dos puntos → claramente intento de tiempo
+  if(/[hm:]/.test(s)) return true;
+  // Solo dígitos, máximo 3 caracteres → puede ser minutos (ej. "45", "90")
+  if(/^\d{1,3}$/.test(s)) return true;
+  return false;
+}
+
 function validarOracion(d, conFoco){
   const el=document.getElementById(d+"-oracion");
   const val=el.value.trim();
-  // Sin contenido: quitar todo
   if(!val){ el.classList.remove("enfocado-valido","invalido"); return; }
+
+  // Solo validar visualmente si parece un intento de tiempo
+  if(!pareceIntento(val)){
+    el.classList.remove("enfocado-valido","invalido");
+    return;
+  }
+
   const r=parsearTiempo(val);
   if(r && r.ok){
     el.classList.remove("invalido");
-    // Verde solo si tiene el foco activo
     if(conFoco || document.activeElement === el){
       el.classList.add("enfocado-valido");
     }
@@ -424,16 +434,16 @@ function validarOracion(d, conFoco){
   }
 }
 
-// ── CAMBIO 2: al perder foco, quitar verde ──
 function alQuitarFoco(d){
   const el=document.getElementById(d+"-oracion");
   el.classList.remove("enfocado-valido");
-  // Revalidar para dejar rojo si aplica
   const val=el.value.trim();
-  if(val){
+  if(val && pareceIntento(val)){
     const r=parsearTiempo(val);
     if(!r || !r.ok){ el.classList.add("invalido"); }
     else { el.classList.remove("invalido"); }
+  } else {
+    el.classList.remove("invalido");
   }
 }
 
