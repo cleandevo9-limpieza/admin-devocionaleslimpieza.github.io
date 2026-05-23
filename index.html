@@ -32,7 +32,10 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
 .header{ text-align:center;margin-bottom:22px; }
 .header h1{ font-size:24px;margin:0;font-weight:700;letter-spacing:-.5px;color:var(--azul); }
 .header h2{ margin-top:4px;font-size:13px;opacity:.6; }
-#titulo{ margin-top:12px;font-size:13px;font-weight:500;color:var(--azul);opacity:.8;text-align:center;cursor:pointer; }
+
+/* ── CAMBIO 3: más espacio debajo del nombre de usuario ── */
+#titulo{ margin-top:12px; margin-bottom:18px; font-size:13px;font-weight:500;color:var(--azul);opacity:.8;text-align:center;cursor:pointer; }
+
 .versiculo{ background:var(--azul-light);padding:12px;border-radius:12px;margin-top:12px;font-style:italic;font-size:12px;display:none; }
 .referencia{ font-size:11px;opacity:.7;margin-top:3px; }
 
@@ -81,8 +84,9 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
   outline:none;transition:border .2s,background .2s,box-shadow .2s;
   resize:none;height:72px;display:block;
 }
+/* ── CAMBIO 2: verde SOLO mientras tiene foco ── */
 .oracion-input:focus{ border:2px solid var(--azul-mid);background:white;box-shadow:0 0 0 3px rgba(77,163,255,.15); }
-.oracion-input.valido{ border:2px solid #1f9b5e!important;background:#f0faf5!important;box-shadow:0 0 0 3px rgba(31,155,94,.12)!important; }
+.oracion-input.enfocado-valido{ border:2px solid #1f9b5e!important;background:#f0faf5!important;box-shadow:0 0 0 3px rgba(31,155,94,.12)!important; }
 .oracion-input.invalido{ border:2px solid var(--rojo)!important;background:#fff5f5!important;box-shadow:0 0 0 3px rgba(192,57,43,.12)!important; }
 .oracion-input.readonly{ background:#f0f0f0;pointer-events:none; }
 
@@ -249,9 +253,8 @@ const URL_GET  = "https://script.google.com/macros/s/AKfycbyph6Mwmlkx_Io2OIrTecu
 
 const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb"];
 const diasCompletos = {Lun:"Lunes",Mar:"Martes","Mié":"Miércoles",Jue:"Jueves",Vie:"Viernes","Sáb":"Sábado"};
-// Niveles de oración
 const NIVELES = ["1 hr","1:30 hr","2 hr","Más"];
-const NIVELES_MIN = [60, 90, 120, 121]; // minutos referencia
+const NIVELES_MIN = [60, 90, 120, 121];
 
 let usuario="", contadorClicks=0, vista="actual", toastTimer=null;
 
@@ -265,9 +268,14 @@ function mostrarToast(msg,tipo=""){
   toastTimer=setTimeout(()=>t.classList.remove("visible"),3000);
 }
 
-// ── PARSEAR TIEMPO (para compatibilidad con envío)
+// ── PARSEAR TIEMPO
 function parsearTiempo(raw){
   if(!raw||!raw.trim()) return {ok:false};
+
+  // ── CAMBIO 1: rechazar "0", "00", "0h", "0m", "0:00", etc. ──
+  const soloNumero = raw.trim().replace(/^0+$/, "");
+  if(soloNumero === "") return {ok:false}; // era puro ceros
+
   // Si es un nivel estándar
   const idx=NIVELES.findIndex(n=>n===raw.trim());
   if(idx>=0){
@@ -291,6 +299,7 @@ function parsearTiempo(raw){
   if(!match) return {ok:false};
   h+=Math.floor(m/60);m=m%60;
   const total=h*60+m;
+  // ── CAMBIO 1: total=0 también es inválido ──
   if(total<=0||total>300) return {ok:false,excede:total>300};
   let texto="";
   if(h>0&&m>0) texto=`${h} hora${h>1?"s":""} ${m} minuto${m>1?"s":""}`;
@@ -380,7 +389,10 @@ function crearTabla(){
         <textarea class="tabla-input" id="${d}-lectura"></textarea>
       </div>
       <div class="campo-wrap">
-        <textarea class="oracion-input" id="${d}-oracion" oninput="validarOracion('${d}')"></textarea>
+        <textarea class="oracion-input" id="${d}-oracion"
+          oninput="validarOracion('${d}')"
+          onfocus="validarOracion('${d}', true)"
+          onblur="alQuitarFoco('${d}')"></textarea>
       </div>
       <div class="campo-wrap">
         <textarea class="tabla-input" id="${d}-dios"></textarea>
@@ -391,16 +403,38 @@ function crearTabla(){
 }
 
 
-
-
-// ── VALIDAR ORACIÓN
-function validarOracion(d){
+// ── CAMBIO 2: validar con estado de foco ──
+// conFoco=true  → puede mostrar verde (enfocado-valido)
+// conFoco=false → solo muestra rojo si inválido, nunca verde
+function validarOracion(d, conFoco){
   const el=document.getElementById(d+"-oracion");
   const val=el.value.trim();
-  if(!val){ el.classList.remove("valido","invalido"); return; }
+  // Sin contenido: quitar todo
+  if(!val){ el.classList.remove("enfocado-valido","invalido"); return; }
   const r=parsearTiempo(val);
-  if(r&&r.ok){ el.classList.add("valido"); el.classList.remove("invalido"); }
-  else { el.classList.add("invalido"); el.classList.remove("valido"); }
+  if(r && r.ok){
+    el.classList.remove("invalido");
+    // Verde solo si tiene el foco activo
+    if(conFoco || document.activeElement === el){
+      el.classList.add("enfocado-valido");
+    }
+  } else {
+    el.classList.add("invalido");
+    el.classList.remove("enfocado-valido");
+  }
+}
+
+// ── CAMBIO 2: al perder foco, quitar verde ──
+function alQuitarFoco(d){
+  const el=document.getElementById(d+"-oracion");
+  el.classList.remove("enfocado-valido");
+  // Revalidar para dejar rojo si aplica
+  const val=el.value.trim();
+  if(val){
+    const r=parsearTiempo(val);
+    if(!r || !r.ok){ el.classList.add("invalido"); }
+    else { el.classList.remove("invalido"); }
+  }
 }
 
 // ── MARCAR ENVIADAS
