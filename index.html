@@ -12,7 +12,6 @@
 *{ box-sizing:border-box; }
 body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif; background:linear-gradient(135deg,#eaf2ff,#f8fbff); color:var(--texto); }
 
-/* MENÚ */
 .menu-btn{ position:fixed;top:15px;left:15px;background:white;border-radius:12px;padding:10px 14px;box-shadow:0 5px 15px rgba(0,0,0,.1);cursor:pointer;z-index:1000;font-size:18px;line-height:1; }
 .menu{ position:fixed;top:58px;left:15px;background:white;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,.13);overflow:hidden;display:none;z-index:1000;min-width:210px; }
 .menu div{ padding:13px 18px;cursor:pointer;font-size:14px;font-weight:500;transition:background .15s; }
@@ -20,26 +19,21 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
 .menu-sep{ height:1px;background:#eee;margin:0;padding:0!important;cursor:default!important; }
 .menu-sep:hover{ background:#eee!important; }
 
-/* CONTAINER */
 .container{ max-width:680px;margin:25px auto;padding:24px 20px;border-radius:22px;background:rgba(255,255,255,.88);backdrop-filter:blur(15px);border:1px solid rgba(0,0,0,.05);box-shadow:0 20px 40px rgba(0,0,0,.08);animation:fadeIn .6s ease; }
 
-/* TABS */
 .tabs{ display:flex;background:var(--azul-light);border-radius:14px;padding:2px;gap:4px;margin-bottom:14px; }
 .tab{ flex:1;text-align:center;padding:9px;border-radius:10px;font-size:12px;cursor:pointer;color:var(--azul);font-weight:500; }
 .tab.active{ background:white;box-shadow:0 4px 10px rgba(0,0,0,.06); }
 
-/* HEADER */
 .header{ text-align:center;margin-bottom:22px; }
 .header h1{ font-size:24px;margin:0;font-weight:700;letter-spacing:-.5px;color:var(--azul); }
 .header h2{ margin-top:4px;font-size:13px;opacity:.6; }
 
-/* ── CAMBIO 3: más espacio debajo del nombre de usuario ── */
-#titulo{ margin-top:12px; margin-bottom:18px; font-size:13px;font-weight:500;color:var(--azul);opacity:.8;text-align:center;cursor:pointer; }
+#titulo{ margin-top:12px;margin-bottom:18px;font-size:13px;font-weight:500;color:var(--azul);opacity:.8;text-align:center;cursor:pointer; }
 
 .versiculo{ background:var(--azul-light);padding:12px;border-radius:12px;margin-top:12px;font-style:italic;font-size:12px;display:none; }
 .referencia{ font-size:11px;opacity:.7;margin-top:3px; }
 
-/* TABLA — cada día es una fila de campos en columna */
 .tabla-wrap{ display:flex;flex-direction:column;gap:8px;margin-top:10px; }
 
 .fila-dia{
@@ -64,7 +58,6 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
 .fila-enviada .dia-badge{ background:#cce0ff;color:#1f5fa0; }
 
 .col-label{ font-size:9px;font-weight:700;color:var(--azul);opacity:.6;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px; }
-
 .campo-wrap{ display:flex;flex-direction:column; }
 
 .tabla-input{
@@ -75,22 +68,17 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
 .tabla-input:focus{ outline:none;border:2px solid var(--azul-mid);background:white;box-shadow:0 0 0 3px rgba(77,163,255,.15); }
 .tabla-input.readonly{ background:#f0f0f0;pointer-events:none; }
 
-/* Columna oración: chips + campo */
-.oracion-wrap{ display:flex;flex-direction:column;gap:4px; }
-.oracion-chips{ display:flex;gap:3px;flex-wrap:wrap; }
 .oracion-input{
   width:100%;background:#f5f9ff;border:2px solid transparent;border-radius:10px;
   padding:8px 9px;color:var(--texto);font-size:13px;font-family:inherit;
   outline:none;transition:border .2s,background .2s,box-shadow .2s;
   resize:none;height:72px;display:block;
 }
-/* ── CAMBIO 2: verde SOLO mientras tiene foco ── */
 .oracion-input:focus{ border:2px solid var(--azul-mid);background:white;box-shadow:0 0 0 3px rgba(77,163,255,.15); }
 .oracion-input.enfocado-valido{ border:2px solid #1f9b5e!important;background:#f0faf5!important;box-shadow:0 0 0 3px rgba(31,155,94,.12)!important; }
 .oracion-input.invalido{ border:2px solid var(--rojo)!important;background:#fff5f5!important;box-shadow:0 0 0 3px rgba(192,57,43,.12)!important; }
 .oracion-input.readonly{ background:#f0f0f0;pointer-events:none; }
 
-/* EXTRA */
 .seccion-extra{ margin-top:14px;display:flex;flex-direction:column;gap:12px; }
 .card-extra{ background:white;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.06);overflow:hidden; }
 .card-extra-header{ display:flex;align-items:center;gap:9px;padding:12px 14px 0; }
@@ -109,19 +97,16 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sa
 .card-extra textarea.readonly{ background:#f0f0f0;pointer-events:none; }
 .card-extra-oracion textarea{ height:90px; }
 
-/* BOTONES */
 .botones{ display:flex;gap:10px;margin-top:18px; }
 button{ flex:1;padding:14px;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:.25s;color:white; }
 .guardar{ background:linear-gradient(135deg,var(--azul-mid),var(--azul)); }
 .enviar{ background:linear-gradient(135deg,var(--azul),var(--azul-dark)); }
 button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14); }
 
-/* LOGIN */
 .login{ text-align:center;padding:28px 10px; }
 .login input{ padding:11px;border:1px solid rgba(0,0,0,.1);border-radius:12px;background:white;text-align:center;width:80%;max-width:240px;font-size:15px; }
 .login button{ margin-top:10px;padding:12px 24px;background:linear-gradient(135deg,var(--azul),var(--azul-dark));color:white; }
 
-/* ENVÍOS */
 #envios{ display:none;margin-top:6px; }
 #envios h3{ color:var(--azul);margin-bottom:6px; }
 .card-envio{ background:white;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.06);padding:13px 16px;margin-bottom:11px;border-left:4px solid var(--azul); }
@@ -134,10 +119,11 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
 .btn-reload{ background:var(--azul-light);color:var(--azul);border:none;border-radius:10px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600;margin-bottom:10px; }
 .btn-reload:hover{ background:#d9ecff;transform:none;box-shadow:none; }
 
-.btn-imprimir-flotante{ position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--azul),var(--azul-dark));color:white;border:none;border-radius:50px;padding:12px 18px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.2);display:none;z-index:999;transition:.25s;flex:unset; }
+.btn-imprimir-flotante{ position:fixed;right:24px;background:linear-gradient(135deg,var(--azul),var(--azul-dark));color:white;border:none;border-radius:50px;padding:12px 18px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.2);display:none;z-index:999;transition:.25s;flex:unset; }
 .btn-imprimir-flotante:hover{ transform:translateY(-3px); }
+#btnImprimirPeticiones{ bottom:24px; }
+#btnImprimirMensual{ bottom:72px; }
 
-/* TOAST */
 .toast{ position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--texto);color:white;padding:11px 22px;border-radius:50px;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;z-index:9999;pointer-events:none;white-space:nowrap; }
 .toast.toast-exito{ background:linear-gradient(135deg,var(--azul),var(--azul-dark)); }
 .toast.toast-error{ background:linear-gradient(135deg,var(--rojo),var(--rojo-dark)); }
@@ -151,14 +137,13 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
 
 @media(max-width:480px){
   .container{ padding:14px 10px;margin:8px;border-radius:16px; }
-  .fila-dia{ grid-template-columns:34px 1fr 82px 1fr; gap:5px; padding:8px 10px; }
+  .fila-dia{ grid-template-columns:34px 1fr 82px 1fr;gap:5px;padding:8px 10px; }
   .tabla-input{ height:68px;font-size:13px; }
   .header h1{ font-size:20px; }
   button{ padding:13px;font-size:13px; }
 }
 
 @keyframes fadeIn{ from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);} }
-
 </style>
 </head>
 <body>
@@ -196,12 +181,11 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
     <div id="app" style="display:none;">
       <h3 id="titulo"></h3>
 
-      <!-- Encabezados de columna -->
       <div style="display:grid;grid-template-columns:38px 1fr 115px 0.8fr;gap:6px;padding:0 12px;margin-top:10px;">
         <div></div>
-        <div class="col-label" style="font-size:9px;font-weight:700;color:var(--azul);opacity:.6;text-transform:uppercase;letter-spacing:.4px;">Lectura (Biblia)</div>
-        <div class="col-label" style="font-size:9px;font-weight:700;color:var(--azul);opacity:.6;text-transform:uppercase;letter-spacing:.4px;">Oración</div>
-        <div class="col-label" style="font-size:9px;font-weight:700;color:var(--azul);opacity:.6;text-transform:uppercase;letter-spacing:.4px;">Lo que Dios me habló</div>
+        <div class="col-label">Lectura (Biblia)</div>
+        <div class="col-label">Oración</div>
+        <div class="col-label">Lo que Dios me habló</div>
       </div>
 
       <div class="tabla-wrap" id="tabla"></div>
@@ -237,13 +221,14 @@ button:hover{ transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.14);
   </div>
 
   <div id="envios">
-    <h3>📋 Envíos recientes</h3>
+    <h3>📋 Envíos de esta semana</h3>
     <button class="btn-reload" onclick="cargarEnvios()">↻ Actualizar</button>
     <div id="listaEnvios"><p class="sin-datos">Cargando…</p></div>
   </div>
 </div>
 
-<button class="btn-imprimir-flotante" id="btnImprimir" onclick="imprimirPeticiones()">🙏 Imprimir peticiones</button>
+<button class="btn-imprimir-flotante" id="btnImprimirPeticiones" onclick="imprimirPeticiones()">🙏 Imprimir peticiones</button>
+<button class="btn-imprimir-flotante" id="btnImprimirMensual" onclick="imprimirMensual()">📅 Reporte mensual</button>
 <div id="area-impresion"></div>
 <div class="toast" id="toast"></div>
 
@@ -252,12 +237,9 @@ const URL_POST = "https://script.google.com/macros/s/AKfycbw0EOyTWqexog7fiieXMOs
 const URL_GET  = "https://script.google.com/macros/s/AKfycbw0EOyTWqexog7fiieXMOsXLCmVGFsPWsm16STsQZOmWQ5Hgjp5IW7Lj_Nt8eBgCGw3jg/exec";
 
 const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb"];
-const diasCompletos = {Lun:"Lunes",Mar:"Martes","Mié":"Miércoles",Jue:"Jueves",Vie:"Viernes","Sáb":"Sábado"};
 const NIVELES = ["1 hr","1:30 hr","2 hr","Más"];
-const NIVELES_MIN = [60, 90, 120, 121];
 
 let usuario="", contadorClicks=0, vista="actual", toastTimer=null;
-
 
 // ── TOAST
 function mostrarToast(msg,tipo=""){
@@ -271,15 +253,12 @@ function mostrarToast(msg,tipo=""){
 // ── PARSEAR TIEMPO
 function parsearTiempo(raw){
   if(!raw||!raw.trim()) return {ok:false};
-
-  // Si es un nivel estándar
   const idx=NIVELES.findIndex(n=>n===raw.trim());
   if(idx>=0){
     const mins=[60,90,120,999];
     const textos=["1 hora","1 hora 30 minutos","2 horas","Más de 2 horas"];
     return {ok:true,texto:textos[idx],total:mins[idx],esChip:true};
   }
-  // Parseo libre
   let s=raw.trim().toLowerCase();
   s=s.replace(/horas?/g,"h").replace(/minutos?/g,"m").replace(/mins?/g,"m").replace(/hrs?/g,"h");
   s=s.replace(/(\d)\s+([hm])/g,"$1$2").replace(/([hm])\s+(\d)/g,"$1$2");
@@ -295,7 +274,6 @@ function parsearTiempo(raw){
   if(!match) return {ok:false};
   h+=Math.floor(m/60);m=m%60;
   const total=h*60+m;
-  // ── CAMBIO 1: total=0 también es inválido ──
   if(total>300) return {ok:false,excede:true};
   let texto="";
   if(total===0) texto="0 minutos";
@@ -303,6 +281,34 @@ function parsearTiempo(raw){
   else if(h>0) texto=`${h} hora${h>1?"s":""}`;
   else texto=`${m} minuto${m>1?"s":""}`;
   return {ok:true,texto,total};
+}
+
+// ── FECHAS HELPER
+function semanaActual(){
+  const hoy=new Date();
+  const dia=hoy.getDay();
+  const lunes=new Date(hoy);
+  lunes.setHours(0,0,0,0);
+  lunes.setDate(hoy.getDate()-(dia===0?6:dia-1));
+  const domingo=new Date(lunes);
+  domingo.setDate(lunes.getDate()+6);
+  domingo.setHours(23,59,59,999);
+  return {lunes,domingo};
+}
+
+function mesActual(){
+  const hoy=new Date();
+  const inicio=new Date(hoy.getFullYear(),hoy.getMonth(),1,0,0,0,0);
+  const fin=new Date(hoy.getFullYear(),hoy.getMonth()+1,0,23,59,59,999);
+  const nombre=hoy.toLocaleString("es-ES",{month:"long",year:"numeric"});
+  return {inicio,fin,nombre};
+}
+
+function parsearFecha(str){
+  if(!str||str==="—") return null;
+  const p=str.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+  if(!p) return null;
+  return new Date(+p[3],+p[2]-1,+p[1],+p[4],+p[5]);
 }
 
 // ── MENÚ
@@ -317,15 +323,18 @@ document.addEventListener("click",e=>{
 
 function mostrarVista(v){
   document.getElementById("menu").style.display="none";
-  const btn=document.getElementById("btnImprimir");
+  const btnP=document.getElementById("btnImprimirPeticiones");
+  const btnM=document.getElementById("btnImprimirMensual");
   if(v==="devocional"){
     document.getElementById("contenidoPrincipal").style.display="block";
     document.getElementById("envios").style.display="none";
-    btn.style.display="none";
+    btnP.style.display="none";
+    btnM.style.display="none";
   } else {
     document.getElementById("contenidoPrincipal").style.display="none";
     document.getElementById("envios").style.display="block";
-    btn.style.display="block";
+    btnP.style.display="block";
+    btnM.style.display="block";
     cargarEnvios();
   }
 }
@@ -410,35 +419,22 @@ function crearTabla(){
   document.getElementById("tabla").innerHTML=html;
 }
 
-
-// Detecta si el valor "parece" un intento de escribir tiempo
-// (contiene dígitos combinados con h/m/: o es solo dígitos cortos ≤3 chars)
 function pareceIntento(val){
-  const s = val.trim().toLowerCase();
-  // Contiene letras de tiempo o dos puntos → claramente intento de tiempo
+  const s=val.trim().toLowerCase();
   if(/[hm:]/.test(s)) return true;
-  // Solo dígitos, máximo 3 caracteres → puede ser minutos (ej. "45", "90")
   if(/^\d{1,3}$/.test(s)) return true;
   return false;
 }
 
-function validarOracion(d, conFoco){
+function validarOracion(d,conFoco){
   const el=document.getElementById(d+"-oracion");
   const val=el.value.trim();
-  if(!val){ el.classList.remove("enfocado-valido","invalido"); return; }
-
-  // Solo validar visualmente si parece un intento de tiempo
-  if(!pareceIntento(val)){
-    el.classList.remove("enfocado-valido","invalido");
-    return;
-  }
-
+  if(!val){el.classList.remove("enfocado-valido","invalido");return;}
+  if(!pareceIntento(val)){el.classList.remove("enfocado-valido","invalido");return;}
   const r=parsearTiempo(val);
-  if(r && r.ok){
+  if(r&&r.ok){
     el.classList.remove("invalido");
-    if(conFoco || document.activeElement === el){
-      el.classList.add("enfocado-valido");
-    }
+    if(conFoco||document.activeElement===el) el.classList.add("enfocado-valido");
   } else {
     el.classList.add("invalido");
     el.classList.remove("enfocado-valido");
@@ -449,10 +445,10 @@ function alQuitarFoco(d){
   const el=document.getElementById(d+"-oracion");
   el.classList.remove("enfocado-valido");
   const val=el.value.trim();
-  if(val && pareceIntento(val)){
+  if(val&&pareceIntento(val)){
     const r=parsearTiempo(val);
-    if(!r || !r.ok){ el.classList.add("invalido"); }
-    else { el.classList.remove("invalido"); }
+    if(!r||!r.ok) el.classList.add("invalido");
+    else el.classList.remove("invalido");
   } else {
     el.classList.remove("invalido");
   }
@@ -534,14 +530,14 @@ function enviar(){
       dios:document.getElementById(d+"-dios").value
     };
   });
-  guardarObj.peticion=peticion; guardarObj.libro=libro;
+  guardarObj.peticion=peticion;guardarObj.libro=libro;
   localStorage.setItem("semanaAnterior",JSON.stringify(guardarObj));
 
   fetch(URL_POST,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(datos)})
   .then(()=>{
     mostrarToast("✓ Devocional enviado correctamente","exito");
     localStorage.setItem("tiempoEnvio",Date.now());
-    bloquearBoton(); marcarFilasEnviadas();
+    bloquearBoton();marcarFilasEnviadas();
     localStorage.removeItem("datos");
   })
   .catch(()=>{mostrarToast("✗ Error de conexión, intenta de nuevo","error");desbloquearBoton();});
@@ -552,7 +548,7 @@ function controlarEnvio(){
   if(t){
     const diff=Date.now()-parseInt(t);
     if(diff<60000){
-      bloquearBoton(); marcarFilasEnviadas();
+      bloquearBoton();marcarFilasEnviadas();
       setTimeout(()=>{desbloquearBoton();desmarcarFilas();},60000-diff);
     }
   }
@@ -569,53 +565,138 @@ function desbloquearBoton(){
   localStorage.removeItem("tiempoEnvio");
 }
 
-// ── JSONP ENVÍOS
+// ── JSONP ENVÍOS — solo semana actual, sin duplicados
 function cargarEnvios(){
   document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>Cargando…</p>";
   if(window.__jsonpTimeout) clearTimeout(window.__jsonpTimeout);
-  const old=document.getElementById("jsonp-script"); if(old)old.remove();
+  const old=document.getElementById("jsonp-script");if(old)old.remove();
   const cb="jsonpCallback_"+Date.now();
+
   window[cb]=function(data){
     clearTimeout(window.__jsonpTimeout);
     document.getElementById("jsonp-script").remove();
     delete window[cb];
+
     if(!Array.isArray(data)||!data.length){
       document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>No hay envíos todavía</p>";
       return;
     }
+
+    const rango=semanaActual();
+    const deSemana=data.filter(g=>{
+      const f=parsearFecha(g.fecha);
+      return f&&f>=rango.lunes&&f<=rango.domingo;
+    });
+
+    // Quedarse solo con el envío más reciente por usuario
+    const porUsuario={};
+    deSemana.forEach(g=>{
+      const f=parsearFecha(g.fecha);
+      if(!porUsuario[g.usuario]||f>parsearFecha(porUsuario[g.usuario].fecha))
+        porUsuario[g.usuario]=g;
+    });
+    const unicos=Object.values(porUsuario);
+
+    if(!unicos.length){
+      document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>No hay envíos esta semana</p>";
+      return;
+    }
+
     let html="";
-    data.forEach(g=>{
-      let f=g.fecha||"—";
-      if(f&&f!=="—"){const df=new Date(f);if(!isNaN(df)){f=`${String(df.getDate()).padStart(2,"0")}/${String(df.getMonth()+1).padStart(2,"0")}/${df.getFullYear()} ${String(df.getHours()).padStart(2,"0")}:${String(df.getMinutes()).padStart(2,"0")}`;}}
+    unicos.forEach(g=>{
       const pet=g.peticion&&g.peticion!=="-"?`<div class='peticion-txt'>🙏 ${escHtml(g.peticion)}</div>`:"";
-      html+=`<div class='card-envio'><div class='cabecera'><span class='nombre'>👤 ${escHtml(g.usuario)}</span><span class='hora'>🕐 ${escHtml(f)}</span></div><div><span class='tag-oracion'>⏱ ${escHtml(g.tiempo||"—")}</span></div>${pet}</div>`;
+      html+=`<div class='card-envio'><div class='cabecera'><span class='nombre'>👤 ${escHtml(g.usuario)}</span><span class='hora'>🕐 ${escHtml(g.fecha||"—")}</span></div><div><span class='tag-oracion'>⏱ ${escHtml(g.tiempo||"—")}</span></div>${pet}</div>`;
     });
     document.getElementById("listaEnvios").innerHTML=html;
   };
+
   window.__jsonpTimeout=setTimeout(()=>{
     const s=document.getElementById("jsonp-script");if(s)s.remove();
     if(window[cb])delete window[cb];
     document.getElementById("listaEnvios").innerHTML="<p class='sin-datos'>Error al conectar</p>";
   },10000);
-  const sc=document.createElement("script");sc.id="jsonp-script";sc.src=URL_GET+"?callback="+cb;
+
+  const sc=document.createElement("script");
+  sc.id="jsonp-script";
+  sc.src=URL_GET+"?callback="+cb;
   document.body.appendChild(sc);
 }
 
 function escHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-// ── IMPRIMIR PETICIONES (vista envíos)
+// ── IMPRIMIR PETICIONES
 function imprimirPeticiones(){
   const cards=document.querySelectorAll(".card-envio");
   let html=`<div style="font-family:sans-serif;padding:10px;"><h2 style="font-size:17px;margin-bottom:4px;">Peticiones de oración — Ministerio de Limpieza</h2><p style="color:#888;font-size:12px;margin:0 0 16px;">${new Date().toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"})}</p>`;
   let n=0;
   cards.forEach(c=>{
     const p=c.querySelector(".peticion-txt"),nom=c.querySelector(".nombre");
-    if(p&&nom){const t=p.innerText.replace("🙏 ","").trim();if(t.replace(/[\s.,;:!?-]/g,"").length>=3){n++;html+=`<div style="border-left:3px solid #000;padding:8px 12px;margin-bottom:12px;"><div style="font-size:11px;color:#666;margin-bottom:4px;font-weight:700;">${nom.innerText.replace("👤 ","")}</div><div style="font-size:13px;line-height:1.5;">${t}</div></div>`;}}
+    if(p&&nom){
+      const t=p.innerText.replace("🙏 ","").trim();
+      if(t.replace(/[\s.,;:!?-]/g,"").length>=3){
+        n++;
+        html+=`<div style="border-left:3px solid #000;padding:8px 12px;margin-bottom:12px;"><div style="font-size:11px;color:#666;margin-bottom:4px;font-weight:700;">${nom.innerText.replace("👤 ","")}</div><div style="font-size:13px;line-height:1.5;">${t}</div></div>`;
+      }
+    }
   });
   html+="</div>";
   if(!n){mostrarToast("No hay peticiones registradas","error");return;}
   const a=document.getElementById("area-impresion");
   a.innerHTML=html;a.style.display="block";window.print();a.style.display="none";
+}
+
+// ── REPORTE MENSUAL
+function imprimirMensual(){
+  const old=document.getElementById("jsonp-script-mensual");if(old)old.remove();
+  const cb="jsonpMensual_"+Date.now();
+
+  window[cb]=function(data){
+    document.getElementById("jsonp-script-mensual").remove();
+    delete window[cb];
+
+    if(!Array.isArray(data)||!data.length){
+      mostrarToast("No hay datos para el reporte","error");return;
+    }
+
+    const rango=mesActual();
+    const totales={};
+
+    data.forEach(g=>{
+      const f=parsearFecha(g.fecha);
+      if(!f||f<rango.inicio||f>rango.fin) return;
+      if(!totales[g.usuario]) totales[g.usuario]=0;
+      totales[g.usuario]+=(g.minutos||0);
+    });
+
+    const usuarios=Object.keys(totales);
+    if(!usuarios.length){mostrarToast("No hay envíos este mes","error");return;}
+
+    const nombreMes=rango.nombre.charAt(0).toUpperCase()+rango.nombre.slice(1);
+
+    let html=`<div style="font-family:sans-serif;padding:16px;">
+      <h2 style="font-size:18px;margin-bottom:2px;">Reporte ${nombreMes}</h2>
+      <p style="font-size:13px;color:#888;margin:0 0 18px;">Ministerio de Limpieza</p>`;
+
+    usuarios.sort().forEach(u=>{
+      const mins=totales[u];
+      const h=Math.floor(mins/60);
+      const m=mins%60;
+      const tiempo=h>0&&m>0?`${h} hora${h>1?"s":""} ${m} min`:h>0?`${h} hora${h>1?"s":""}`: `${m} minutos`;
+      html+=`<div style="border-left:3px solid #1f6fb2;padding:8px 12px;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;color:#1a2a44;">${escHtml(u)}</div>
+        <div style="font-size:13px;color:#444;margin-top:3px;">Oración: <strong>${tiempo}</strong></div>
+      </div>`;
+    });
+
+    html+="</div>";
+    const a=document.getElementById("area-impresion");
+    a.innerHTML=html;a.style.display="block";window.print();a.style.display="none";
+  };
+
+  const sc=document.createElement("script");
+  sc.id="jsonp-script-mensual";
+  sc.src=URL_GET+"?callback="+cb;
+  document.body.appendChild(sc);
 }
 
 // ── BOTÓN SECRETO
